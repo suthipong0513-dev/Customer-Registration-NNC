@@ -11,7 +11,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "^5.2.1"
-  },
-  "devDependencies": {}
+    "express": "^5.3.0"
+  }
 }

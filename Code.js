@@ -3252,6 +3252,7 @@ function liveCheck_(s, t) {
  * ===================================================================*/
 function requireAuth_(token, perm) {
   var t = String(token || '').trim();
+  if (getAdminKick_(t)) throw new Error('SESSION_EXPIRED');   // โทเคนที่ถูกผู้ดูแลเตะ ใช้ไม่ได้ทันที
   var s = getSession_(t);
   if (!s) throw new Error('SESSION_EXPIRED');
   if (!liveCheck_(s, t)) throw new Error('SESSION_EXPIRED');
@@ -3330,8 +3331,12 @@ function apiLogout(token) {
 
 function apiPing(token) {
   var t = String(token || '').trim();
-  var s = getSession_(t);
 
+  var ka = getAdminKick_(t);
+  if (ka) return fail_('ผู้ดูแลระบบ (' + ka.by + ') ให้บัญชีนี้ออกจากระบบเมื่อ ' + fmtTime_(ka.at) +
+    (ka.suspend ? ' และระงับการใช้งานบัญชีแล้ว กรุณาติดต่อผู้ดูแลระบบ' : ''), 'SESSION_EXPIRED');
+
+  var s = getSession_(t);
   if (!s) {
     var k = getKicked_(t);
     if (k) return fail_('บัญชีนี้ถูกเข้าสู่ระบบจากอุปกรณ์อื่น (' + (k.dev || 'ไม่ทราบอุปกรณ์') +
@@ -3350,5 +3355,159 @@ function apiPing(token) {
   }
   return ok_({ alive: true, serverTime: nowStr_() });
 }
+/* =====================================================================
+ * ===========  โมดูลผู้ดูแลเตะผู้ใช้ออกจากระบบ (Admin Kick)  ===========
+ * เวอร์ชัน 4.0.5 — ต้องมีโมดูล Single Session (v4.0.4) อยู่ก่อน
+ * วางเหนือบรรทัด var ZONES = zonesLoad_();
+ * ===================================================================*/
+function headLower_(sh) {
+  return sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0]
+           .map(function (h) { return String(h).trim().toLowerCase(); });
+}
 
+/* ---------- จดจำว่าโทเคนนี้ถูกผู้ดูแลเตะออก (ใช้แสดงข้อความฝั่งผู้ใช้) ---------- */
+function markAdminKick_(token, by, suspend) {
+  try {
+    CacheService.getScriptCache().put('KICKADM_' + token,
+      JSON.stringify({ by: by || 'ผู้ดูแลระบบ', at: Date.now(), suspend: !!suspend }), 21600);
+  } catch (e) {}
+}
+function getAdminKick_(token) {
+  try {
+    var v = CacheService.getScriptCache().get('KICKADM_' + token);
+    return v ? JSON.parse(v) : null;
+  } catch (e) { return null; }
+}
+
+/* ---------- หาแถวผู้ใช้ในชีต Users ---------- */
+function findUserRow_(userId, username) {
+  var sh = getSS_().getSheetByName(SHEETS.USERS);
+  var n = sh.getLastRow() - 1;
+  if (n < 1) return null;
+  var head = headLower_(sh);
+  var ii = head.indexOf('userid'); if (ii < 0) ii = head.indexOf('id');
+  var ui = head.indexOf('username'), fi = head.indexOf('fullname');
+  if (ui < 0) return null;
+  var v = sh.getRange(2, 1, n, head.length).getValues();
+  var id = String(userId || '').trim(), un = String(username || '').trim().toLowerCase();
+  for (var i = 0; i < v.length; i++) {
+    var hitId = ii >= 0 && id && String(v[i][ii]).trim() === id;
+    var hitUn = un && String(v[i][ui]).trim().toLowerCase() === un;
+    if (hitId || hitUn) {
+      return { sheet: sh, row: i + 2, head: head,
+               username: String(v[i][ui]).trim(),
+               fullName: fi >= 0 ? String(v[i][fi]).trim() : '' };
+    }
+  }
+  return null;
+}
+
+/* ---------- ยกเลิกทุกเซสชันที่ยังใช้งานของบัญชีนี้ ---------- */
+function revokeAllSessionsOf_(username, by, suspend) {
+  var count = 0, un = String(username || '').trim().toLowerCase();
+  try {
+    var sh = getSS_().getSheetByName(SHEETS.SESSIONS);
+    var n = sh.getLastRow() - 1;
+    if (n < 1) return 0;
+    var head = headLower_(sh);
+    var ti = head.indexOf('token'), ui = head.indexOf('username'), si = head.indexOf('status');
+    if (ti < 0 || ui < 0 || si < 0) return 0;
+    var v = sh.getRange(2, 1, n, head.length).getValues();
+    for (var i = 0; i < v.length; i++) {
+      if (String(v[i][ui]).trim().toLowerCase() !== un) continue;
+      var st = String(v[i][si]).trim().toUpperCase();
+      if (st && st !== 'ACTIVE') continue;
+      var tk = String(v[i][ti]).trim();
+      sh.getRange(i + 2, si + 1).setValue('KICKED');
+      try { cacheDel_('SESS_' + tk); } catch (e) {}
+      markAdminKick_(tk, by, suspend);
+      count++;
+    }
+    try { invalidateSheet_(SHEETS.SESSIONS); } catch (e) {}
+  } catch (e) { try { logError_('revokeAllSessionsOf_', e); } catch (x) {} }
+  return count;
+}
+
+/* =====================================================================
+ * API
+ * ===================================================================*/
+
+/** สถานะออนไลน์ของทุกบัญชี : { username(ตัวเล็ก) : {online, device, since, lastActive} } */
+function apiUserOnlineMap(token) {
+  try {
+    var sess = requireAuth_(token, 'users');
+    var props = PropertiesService.getScriptProperties().getProperties();
+    var now = Date.now(), out = {};
+    Object.keys(props).forEach(function (k) {
+      if (k.indexOf('LIVE_') !== 0) return;
+      var l; try { l = JSON.parse(props[k]); } catch (e) { return; }
+      if (!l || !l.t || !l.at) return;
+      if (now - l.at >= LIVE_TTL_MS || getAdminKick_(l.t) || !getSession_(l.t)) return;
+      out[k.substring(5)] = {
+        online: true, device: l.dev || '',
+        since: fmtTime_(l.since || l.at), lastActive: fmtTime_(l.at)
+      };
+    });
+    return ok_({ map: out, me: String(sess.Username || '').trim().toLowerCase() });
+  } catch (e) { return handleErr_('apiUserOnlineMap', e); }
+}
+
+/** ผู้ดูแลเตะผู้ใช้ออก (เลือกระงับบัญชีไปพร้อมกันได้) */
+function apiKickUser(token, p) {
+  var lock = LockService.getScriptLock();
+  try {
+    var sess = requireAuth_(token, 'users');
+    p = p || {};
+    lock.waitLock(20000);
+
+    var u = findUserRow_(p.userId, p.username);
+    if (!u) return fail_('ไม่พบบัญชีผู้ใช้', 'NOT_FOUND');
+    if (u.username.toLowerCase() === String(sess.Username).trim().toLowerCase())
+      return fail_('ไม่สามารถเตะบัญชีของตัวเองออกจากระบบได้', 'VALIDATION');
+
+    var by = sess.FullName || sess.Username;
+    var uid = u.username.toLowerCase();
+    var live = liveGet_(uid);
+    var dev = (live && live.dev) || '';
+
+    var n = revokeAllSessionsOf_(u.username, by, p.suspend);
+
+    /* สำรอง : ถ้าชีต Sessions ไม่มีคอลัมน์ที่ต้องใช้ ให้ยกเลิกโทเคนที่ถือสิทธิ์อยู่โดยตรง */
+    if (live && live.t) {
+      revokeToken_(live.t, 'KICKED');
+      markAdminKick_(live.t, by, p.suspend);
+      if (!n) n = 1;
+    }
+        /* ใส่ค่าที่ใช้ไม่ได้แทนการลบ เครื่องที่ถูกเตะจึงยึดสิทธิ์คืนไม่ได้
+       ผู้ใช้ล็อกอินใหม่ได้ตามปกติ เพราะค่านี้ถือว่าหมดอายุแล้ว (at = 0) */
+    liveSet_(uid, { t: 'KICKED_' + Date.now(), at: 0, dev: '', since: 0 });
+
+
+    /* ระงับบัญชี */
+    var suspended = false;
+    if (p.suspend) {
+      var si = u.head.indexOf('status');
+      if (si >= 0) {
+        u.sheet.getRange(u.row, si + 1).setValue('INACTIVE');
+        try { cacheDel_(['USERS_V1']); } catch (e) {}
+        try { invalidateSheet_(SHEETS.USERS); } catch (e) {}
+        suspended = true;
+      }
+    }
+    SpreadsheetApp.flush();
+
+    writeAudit_(sess, 'KICK', 'บัญชีผู้ใช้งาน', u.username,
+      'เตะ ' + u.username + (u.fullName ? ' (' + u.fullName + ')' : '') + ' ออกจากระบบ' +
+      (dev ? ' • อุปกรณ์ ' + dev : '') + ' • ยกเลิก ' + n + ' เซสชัน' +
+      (suspended ? ' • ระงับบัญชีแล้ว' : ''), 'SUCCESS');
+
+    return ok_({ revoked: n, suspended: suspended },
+      'เตะ ' + (u.fullName || u.username) + ' ออกจากระบบเรียบร้อย' +
+      (suspended ? ' และระงับบัญชีแล้ว' : ''));
+  } catch (e) {
+    return handleErr_('apiKickUser', e);
+  } finally {
+    try { lock.releaseLock(); } catch (x) {}
+  }
+}
 var ZONES = zonesLoad_();

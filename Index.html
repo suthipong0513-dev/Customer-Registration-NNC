@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 /* =====================================================================
  * 1) ตัวแปรระบบ
@@ -731,6 +732,188 @@ table.pr-tbl tfoot td{background:#F2F7F8;font-weight:700}
   #printArea{display:block!important}
   .col-rs,#sbResize,#btnSbToggle,.btn-zoom,.full-tip{display:none}
   mark.hl{background:none;font-weight:700}
+}
+/* =====================================================================
+ * ธีม NNC Signal v1.0 — เคเบิลทีวีท้องถิ่นแนวโมเดิร์น
+ * ทำงานเฉพาะหน้าจอ (ไม่มีผลกับการพิมพ์) และเฉพาะเมื่อ body มีคลาส nx
+ * ===================================================================*/
+@media screen{
+
+body.nx{
+  --teal:#0A8A94; --teal-d:#066A72; --teal-l:#18B8C2;
+  --teal-50:#E8F8F9; --teal-100:#C9EEF1;
+  --navy:#0A1724; --navy-2:#0F2233; --navy-3:#16304A;
+  --cyan:#22D3EE; --violet:#7C5CFF;
+  --bg:#F2F5F9; --line:#DFE6EE; --line-2:#EEF2F7;
+  --r:12px; --r-lg:18px;
+  --sh-1:0 1px 2px rgba(10,23,36,.05),0 1px 3px rgba(10,23,36,.06);
+  --sh-2:0 10px 28px -10px rgba(10,23,36,.20);
+  --signal:linear-gradient(90deg,#22D3EE 0%,#0A8A94 50%,#7C5CFF 100%);
+  background:
+    radial-gradient(1100px 480px at 100% -12%,rgba(34,211,238,.09),transparent 60%),
+    radial-gradient(900px 420px at -10% 110%,rgba(124,92,255,.06),transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
+}
+body.nx #pgTitle, body.nx .stat .vl, body.nx .login-card h1,
+body.nx .sb-head b, body.nx .modal-h h3{
+  font-family:'Prompt','Sarabun',sans-serif;letter-spacing:.1px;
+}
+body.nx ::-webkit-scrollbar-thumb:hover{background:var(--teal)}
+
+/* ---------- แถบเมนูซ้าย ---------- */
+body.nx #sidebar{
+  background:
+    radial-gradient(420px 260px at 0% 0%,rgba(34,211,238,.16),transparent 70%),
+    linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 55%,#0B2030 100%);
+  border-right:1px solid rgba(255,255,255,.05);
+  box-shadow:6px 0 28px rgba(10,23,36,.16);
+}
+body.nx #sidebar .sb-head{border-bottom:1px solid rgba(255,255,255,.07)}
+body.nx #sidebar .sb-logo{
+  background:var(--signal);color:#fff;border-radius:13px;
+  box-shadow:0 8px 22px -6px rgba(34,211,238,.55);
+}
+body.nx #sidebar .sb-head b{color:#fff}
+body.nx #sidebar .sb-head span{color:rgba(207,233,240,.72)}
+body.nx #sidebar .nav-t{color:rgba(255,255,255,.36);font-size:11px;letter-spacing:.9px}
+body.nx #sidebar .nav-i{color:rgba(226,236,245,.80);border-radius:11px;transition:background .18s,color .18s,box-shadow .18s}
+body.nx #sidebar .nav-i svg{opacity:.85}
+body.nx #sidebar .nav-i:hover{background:rgba(255,255,255,.07);color:#fff}
+body.nx #sidebar .nav-i.on{
+  background:linear-gradient(90deg,rgba(34,211,238,.20),rgba(124,92,255,.10));
+  color:#fff;box-shadow:inset 3px 0 0 var(--cyan);
+}
+body.nx #sidebar .nav-i.on svg{opacity:1;color:var(--cyan)}
+body.nx #sidebar .nav-i .ct{background:rgba(255,255,255,.09);color:#CFE9F0;font-weight:700}
+body.nx #sidebar .nav-i.on .ct{background:var(--cyan);color:var(--navy)}
+body.nx #sidebar .nav-empty{color:rgba(255,255,255,.5)}
+body.nx #sbFoot{color:rgba(207,233,240,.55)}
+body.nx #btnSbToggle{background:rgba(255,255,255,.07);color:#CFE9F0;border-color:transparent}
+body.nx #btnSbToggle:hover{background:rgba(34,211,238,.22);color:#fff}
+
+/* ป้าย ON AIR */
+body.nx .nx-live{
+  display:inline-flex;align-items:center;gap:5px;margin-top:3px;
+  font:700 9.5px/1 'Prompt',sans-serif;letter-spacing:1.2px;color:#FF6B6B;
+  background:rgba(255,80,80,.12);border:1px solid rgba(255,107,107,.35);
+  padding:3px 7px;border-radius:999px;width:max-content;
+}
+body.nx .nx-live i{width:6px;height:6px;border-radius:50%;background:#FF5252;animation:nxPulse 1.6s infinite}
+@keyframes nxPulse{0%{box-shadow:0 0 0 0 rgba(255,82,82,.7)}70%{box-shadow:0 0 0 7px rgba(255,82,82,0)}100%{box-shadow:0 0 0 0 rgba(255,82,82,0)}}
+
+/* ---------- แถบด้านบน ---------- */
+body.nx .nx-top{
+  background:var(--signal) bottom/100% 2px no-repeat, rgba(255,255,255,.80)!important;
+  -webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);
+  border-bottom:0!important;box-shadow:0 1px 0 var(--line);
+}
+body.nx #pgTitle{color:var(--navy);font-weight:700}
+body.nx #pgSub{color:var(--muted)}
+body.nx #tbClock{
+  display:inline-flex;align-items:center;gap:7px;background:#fff;
+  border:1px solid var(--line);border-radius:999px;padding:4px 12px;
+  font-variant-numeric:tabular-nums;color:var(--ink-2);
+}
+body.nx #tbClock::before{content:'';width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+body.nx #uAvatar{background:var(--signal)!important;color:#fff!important}
+
+/* ---------- การ์ดสถิติ ---------- */
+body.nx .stat{
+  position:relative;overflow:hidden;background:#fff;
+  border:1px solid var(--line)!important;border-radius:16px!important;
+  box-shadow:var(--sh-1);padding-right:62px;
+  transition:transform .2s,box-shadow .2s;
+}
+body.nx .stat:hover{transform:translateY(-2px);box-shadow:var(--sh-2)}
+body.nx .stat::before{
+  content:'';position:absolute;inset:0 0 auto 0;width:auto;height:3px;
+  background:var(--signal);border-radius:0;
+}
+body.nx .stat.g::before{background:linear-gradient(90deg,#22C55E,#10B981)}
+body.nx .stat.a::before{background:linear-gradient(90deg,#F59E0B,#FBBF24)}
+body.nx .stat.r::before{background:linear-gradient(90deg,#EF4444,#F97316)}
+body.nx .stat.b::before{background:linear-gradient(90deg,#3B82F6,#22D3EE)}
+body.nx .stat.p::before{background:linear-gradient(90deg,#7C5CFF,#C084FC)}
+body.nx .stat .lb{color:var(--muted);font-weight:600}
+body.nx .nx-ico{
+  position:absolute;right:14px;top:16px;width:38px;height:38px;border-radius:12px;
+  display:grid;place-items:center;background:var(--teal-50);color:var(--teal);
+}
+body.nx .nx-ico svg{width:19px;height:19px}
+body.nx .stat.g .nx-ico{background:#E8F8EF;color:#16A34A}
+body.nx .stat.a .nx-ico{background:#FEF5E2;color:#D97706}
+body.nx .stat.r .nx-ico{background:#FDECEC;color:#DC2626}
+body.nx .stat.b .nx-ico{background:#EAF1FD;color:#2563EB}
+body.nx .stat.p .nx-ico{background:#F1ECFF;color:#7C5CFF}
+
+/* ---------- การ์ดเนื้อหา ---------- */
+body.nx .nx-card{border:1px solid var(--line);border-radius:18px!important;box-shadow:var(--sh-1);background:#fff}
+
+/* ---------- ช่องกรอก / ปุ่ม ---------- */
+body.nx .ctl{border-radius:10px;border-color:var(--line);transition:border-color .15s,box-shadow .15s}
+body.nx .ctl:focus{border-color:var(--teal-l);box-shadow:0 0 0 4px rgba(34,211,238,.16);outline:0}
+body.nx .btn{border-radius:10px;font-weight:600;transition:transform .12s,box-shadow .15s,background .15s}
+body.nx .btn:active{transform:translateY(1px)}
+body.nx .chip{border-radius:999px;background:var(--teal-50);color:var(--teal-d);border-color:var(--teal-100)}
+
+/* ---------- ตาราง ---------- */
+body.nx .tbl{border-collapse:separate;border-spacing:0}
+body.nx .tbl thead th{
+  background:#F6F9FC;color:#4A5B6B;font-weight:700;font-size:12.5px;
+  border-bottom:1px solid var(--line);
+}
+body.nx .tbl thead th.sort-on{color:var(--teal-d)}
+body.nx .tbl tbody td{border-bottom:1px solid var(--line-2)}
+body.nx .tbl tbody tr{transition:background .12s}
+body.nx .tbl tbody tr:hover td{background:#F2FBFC}
+body.nx .tbl td.code{
+  font-family:ui-monospace,'SFMono-Regular',Consolas,'Liberation Mono',monospace;
+  font-size:13px;color:var(--teal-d);
+}
+body.nx .tbl td.c-seq{color:#9AA8B5}
+
+/* ---------- ป้ายสถานะ ---------- */
+body.nx .badge{
+  display:inline-flex;align-items:center;gap:6px;border-radius:999px;
+  padding:3px 10px;font-weight:700;font-size:11.5px;border:0;
+}
+body.nx .badge.bg-success::before, body.nx .badge.bg-warn::before,
+body.nx .badge.bg-danger::before, body.nx .badge.bg-info::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:currentColor;flex:none;
+}
+
+/* ---------- เลขหน้า ---------- */
+body.nx [id$="PgBtns"] button{border-radius:9px}
+body.nx [id$="PgBtns"] button.on{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 4px 12px -4px rgba(10,138,148,.6)}
+
+/* ---------- หน้าต่าง ---------- */
+body.nx .modal-c{border-radius:18px;box-shadow:0 30px 80px -20px rgba(10,23,36,.45)}
+body.nx .modal-h{background:linear-gradient(180deg,#FAFCFE,#fff)}
+
+/* ---------- หน้าเข้าสู่ระบบ ---------- */
+body.nx #loginScreen{
+  background:
+    radial-gradient(900px 520px at 12% 8%,rgba(34,211,238,.26),transparent 60%),
+    radial-gradient(820px 520px at 92% 92%,rgba(124,92,255,.26),transparent 60%),
+    linear-gradient(160deg,#07121C 0%,#0E2A3A 100%);
+}
+body.nx #loginScreen::before{
+  opacity:1;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:38px 38px;
+}
+body.nx .login-card{position:relative;z-index:1;border-radius:22px;box-shadow:0 34px 90px -20px rgba(0,0,0,.55)}
+body.nx .login-logo{background:var(--signal)!important;color:#fff!important;box-shadow:0 12px 30px -8px rgba(34,211,238,.6)}
+body.nx #btnLogin{background:var(--signal);border:0;color:#fff}
+body.nx #btnLogin:hover{filter:brightness(1.07)}
+
+/* ---------- ลดการเคลื่อนไหวสำหรับผู้ที่ตั้งค่าไว้ ---------- */
+@media (prefers-reduced-motion:reduce){
+  body.nx *{animation:none!important;transition:none!important}
+}
 }
 </style>
 </head>
@@ -5204,7 +5387,224 @@ function forceLogout(msg){
 
 /* กลับมาที่แท็บนี้ ตรวจทันทีว่ายังเป็นเจ้าของบัญชีอยู่หรือไม่ */
 window.addEventListener('focus',function(){ pingNow_(); });
+/* =====================================================================
+ * 25) แพตช์ v4.0.5 : ผู้ดูแลเตะผู้ใช้ออกจากระบบ
+ * ต้องวางหลังแพตช์ 24 เสมอ
+ * ===================================================================*/
+APP.onlineMap={};
+APP.usersData=null;
 
+var ICO_KICK='<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>';
+
+function myUsername_(){ return String((APP.user&&APP.user.username)||'').toLowerCase(); }
+function onlineOf_(u){ return APP.onlineMap[String(u.username||'').toLowerCase()]||null; }
+
+/* ---------- โหลดรายชื่อและสถานะออนไลน์พร้อมกัน ---------- */
+function loadUsers(){
+  var q={ keyword:kwValue($('usrKeyword').value), role:$('usrFRole').value, status:$('usrFStatus').value };
+  gas('apiListUsers',[APP.token,q],function(d){
+    APP.usersData={d:d,kw:q.keyword};
+    APP.usersCache=d.items||[];
+    renderUsers_();
+  },{loading:true,loadingText:'กำลังโหลดบัญชีผู้ใช้...'});
+  fetchOnline_();
+}
+
+function fetchOnline_(){
+  gas('apiUserOnlineMap',[APP.token],function(m){
+    APP.onlineMap=m||{};
+    if(APP.usersData) renderUsers_();
+  },{silent:true});
+}
+
+function renderUsers_(){
+  var d=APP.usersData.d, K=APP.usersData.kw, me=myUsername_(), h='', on=0;
+  $('usrTotal').textContent=nf(d.summary.total);
+  $('usrActive').textContent=nf(d.summary.active);
+  $('usrInactive').textContent=nf(d.summary.inactive);
+  $('usrAdmin').textContent=nf(d.summary.admin);
+
+  (d.items||[]).forEach(function(u){
+    var locked=!!u.lockUntil, ol=onlineOf_(u);
+    var self=String(u.username||'').toLowerCase()===me;
+    if(ol) on++;
+    h+='<tr><td class="c-seq">'+nf(u.no)+'</td>'+
+      '<td class="code">'+hl(u.username,K)+(locked?' <span class="badge bg-danger">ล็อก</span>':'')+
+        (self?' <span class="badge bg-gray">คุณ</span>':'')+'</td>'+
+      '<td class="strong">'+hl(u.fullName,K)+'</td>'+
+      '<td class="c-mid"><span class="badge '+(u.role==='ADMIN'?'bg-purple':(u.role==='STAFF'?'bg-info':'bg-gray'))+'">'+esc(u.roleName)+'</span></td>'+
+      '<td class="c-mid">'+(u.status==='ACTIVE'?'<span class="badge bg-success">ใช้งานได้</span>':'<span class="badge bg-danger">ถูกระงับ</span>')+
+        (ol?'<span class="sub-line" style="color:var(--green);font-weight:700" title="เข้าระบบเมื่อ '+esc(ol.since)+'">● ออนไลน์</span>'+
+            '<span class="sub-line">'+esc(ol.device||'')+'</span>':'')+'</td>'+
+      '<td class="c-mid c-nowrap">'+(u.lastLogin?thDateTime(u.lastLogin):'<span class="muted">ยังไม่เคยเข้าใช้</span>')+'</td>'+
+      '<td class="c-act"><div class="row-acts">'+
+        icoBtn('ico-edit','usract','edit',u.userId,'แก้ไข','<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/>')+
+        icoBtn('ico-ok','usract','pw',u.userId,'รีเซ็ตรหัสผ่าน','<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>')+
+        (locked?icoBtn('ico-view','usract','unlock',u.userId,'ปลดล็อกบัญชี','<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>'):'')+
+        (ol&&!self?icoBtn('ico-del','usract','kick',u.userId,'เตะออกจากระบบ',ICO_KICK):'')+
+        (self?'':icoBtn('ico-del','usract','del',u.userId,'ลบบัญชี','<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>'))+
+      '</div></td></tr>';
+  });
+  $('usrBody').innerHTML=h||emptyRow(7,'ไม่พบบัญชีผู้ใช้');
+  $('pgSub').textContent='จัดการผู้ใช้และสิทธิ์การเข้าถึง • ออนไลน์ขณะนี้ '+nf(on)+' บัญชี';
+  refreshGrid('usr','usrBody',[2]);
+}
+
+/* ---------- ปุ่มเตะออก ---------- */
+$('usrBody').addEventListener('click',function(e){
+  var b=e.target.closest('[data-usract="kick"]'); if(!b) return;
+  e.stopPropagation();
+  var u=(APP.usersCache||[]).filter(function(x){ return x.userId===b.dataset.id; })[0];
+  if(!u) return;
+  var ol=onlineOf_(u)||{};
+  confirmBox({
+    title:'เตะผู้ใช้ออกจากระบบ',
+    html:'ต้องการให้ <b>'+esc(u.fullName)+'</b> ('+esc(u.username)+') ออกจากระบบใช่หรือไม่'+
+      (ol.device?'<br><span class="muted">อุปกรณ์ : '+esc(ol.device)+' • เข้าระบบเมื่อ '+esc(ol.since||'-')+'</span>':'')+
+      '<label style="display:flex;gap:8px;align-items:center;margin-top:12px;cursor:pointer;font-weight:600">'+
+      '<input type="checkbox" id="kickSuspend" style="width:17px;height:17px"> ระงับบัญชีนี้ด้วย (เข้าระบบใหม่ไม่ได้)</label>'+
+      '<div class="hint">ผู้ใช้จะถูกออกจากระบบภายใน 1 นาที หรือทันทีที่กดปุ่มใดก็ได้</div>',
+    okText:'เตะออกจากระบบ'
+  },function(){
+    var sus=!!($('kickSuspend')&&$('kickSuspend').checked);
+    gas('apiKickUser',[APP.token,{userId:u.userId,username:u.username,suspend:sus}],function(d,msg){
+      toast('success',msg,'ดำเนินการเรียบร้อย');
+      loadUsers();
+    },{loading:true,loadingText:'กำลังตัดการเชื่อมต่อ...'});
+  });
+},true);
+
+/* ---------- อัปเดตสถานะออนไลน์ทุก 30 วินาทีเมื่อเปิดหน้าบัญชีผู้ใช้ ---------- */
+setInterval(function(){
+  if(APP.token&&APP.page==='users'&&!qs('.modal.on')&&can('users')) fetchOnline_();
+},30000);
+
+/* ---------- ฝั่งผู้ใช้ที่ถูกเตะ : แสดงข้อความว่าใครเป็นคนเตะ ---------- */
+function forceLogout(msg){
+  var old=APP.token;
+  APP.token=''; APP.user=null;
+  if(APP.pingTimer) clearInterval(APP.pingTimer);
+  if(typeof FULL!=='undefined'&&FULL.isOn()) FULL.exit();
+  if(typeof AC!=='undefined') AC.close(true);
+  qsa('.modal.on').forEach(function(m){ m.classList.remove('on'); });
+  document.body.style.overflow='';
+  CUSIDX.invalidate();
+  APP.onlineMap={}; APP.usersData=null;
+  $('appShell').classList.remove('on');
+  $('loginScreen').style.display='flex';
+  var e=$('loginErr');
+  e.textContent=msg||'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่';
+  e.classList.add('show');
+  $('lgPass').value='';
+
+  if(old&&!/อุปกรณ์อื่น|ผู้ดูแลระบบ|ออกจากระบบเรียบร้อย/.test(msg||'')){
+    google.script.run.withSuccessHandler(function(r){
+      if(!APP.token&&r&&r.ok===false&&/อุปกรณ์อื่น|ผู้ดูแลระบบ/.test(r.message||'')) e.textContent=r.message;
+    }).apiPing(old);
+  }
+}
+/* =====================================================================
+ * 25.1) แก้บั๊กแพตช์ 25 — ข้อ 5 และ 6
+ * ===================================================================*/
+APP.meName='';
+
+function myUsername_(){
+  return APP.meName||String((APP.user&&(APP.user.username||APP.user.Username))||'').toLowerCase();
+}
+
+function fetchOnline_(){
+  gas('apiUserOnlineMap',[APP.token],function(m){
+    var r=m||{};
+    APP.onlineMap=r.map||{};
+    if(r.me) APP.meName=r.me;
+    if(APP.usersData&&APP.page==='users') renderUsers_();
+  },{silent:true});
+}
+
+(function(){
+  var orig=renderUsers_;
+  renderUsers_=function(){
+    if(!APP.usersData) return;
+    var keep=$('pgSub').textContent;
+    orig();
+    if(APP.page!=='users') $('pgSub').textContent=keep;   /* ไม่เขียนทับคำอธิบายของหน้าอื่น */
+  };
+})();
+/* =====================================================================
+ * 26) ธีม NNC Signal — เปิด/ปิด และตกแต่งส่วนประกอบ
+ * ===================================================================*/
+var NX={
+  KEY:'nnc_theme_v1',
+  ICON:{
+    def:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    g:'<rect x="2" y="7" width="20" height="14" rx="2"/><polyline points="17 2 12 7 7 2"/>',
+    a:'<circle cx="12" cy="12" r="10"/><line x1="10" y1="15" x2="10" y2="9"/><line x1="14" y1="15" x2="14" y2="9"/>',
+    r:'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>',
+    b:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+    p:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'
+  },
+
+  isOn:function(){
+    try{ return localStorage.getItem(NX.KEY)!=='off'; }catch(e){ return true; }
+  },
+  set:function(on){
+    document.body.classList[on?'add':'remove']('nx');
+    try{ localStorage.setItem(NX.KEY,on?'on':'off'); }catch(e){}
+    var l=$('miTheme'); if(l) qs('span',l).textContent=on?'ใช้หน้าตาแบบเดิม':'ใช้ธีม NNC Signal';
+  },
+
+  /* หาแถบด้านบน : กล่องที่มีทั้งหัวข้อหน้าและนาฬิกา แต่ไม่ครอบเนื้อหาหน้า */
+  tagTop:function(){
+    var t=$('pgTitle'), c=$('tbClock'); if(!t||!c) return;
+    var el=t.parentElement;
+    while(el&&el!==document.body&&!el.contains(c)) el=el.parentElement;
+    if(el&&el!==document.body&&!qs('.page',el)) el.classList.add('nx-top');
+  },
+  tagCards:function(){
+    qsa('[data-full]').forEach(function(b){
+      var c=$(b.dataset.full); if(c) c.classList.add('nx-card');
+    });
+  },
+  addIcons:function(){
+    qsa('.stat').forEach(function(s){
+      if(qs('.nx-ico',s)) return;
+      var k=['g','a','r','b','p'].filter(function(x){ return s.classList.contains(x); })[0]||'def';
+      var d=document.createElement('span');
+      d.className='nx-ico';
+      d.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+NX.ICON[k]+'</svg>';
+      s.appendChild(d);
+    });
+  },
+  addLive:function(){
+    var tx=qs('#sidebar .sb-head .tx');
+    if(!tx||qs('.nx-live',tx)) return;
+    var b=document.createElement('span');
+    b.className='nx-live'; b.innerHTML='<i></i>ON AIR';
+    tx.appendChild(b);
+  },
+  addMenu:function(){
+    var ref=$('miProfile'); if(!ref||$('miTheme')) return;
+    var m=document.createElement(ref.tagName);
+    m.id='miTheme'; m.className=ref.className;
+    if(ref.tagName==='BUTTON') m.type='button';
+    m.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M12 2a10 10 0 1 0 0 20 2 2 0 0 0 2-2v-1a2 2 0 0 1 2-2h1a5 5 0 0 0 5-5A10 10 0 0 0 12 2z"/></svg><span></span>';
+    ref.parentNode.insertBefore(m,ref.nextSibling);
+    m.addEventListener('click',function(e){
+      e.stopPropagation();
+      NX.set(!document.body.classList.contains('nx'));
+      $('umenu').classList.remove('on');
+    });
+  },
+
+  init:function(){
+    NX.tagTop(); NX.tagCards(); NX.addIcons(); NX.addLive(); NX.addMenu();
+    NX.set(NX.isOn());
+    /* การ์ดสถิติในหน้ารายงานสร้างใหม่ทุกครั้ง ต้องเติมไอคอนอีกรอบ */
+    var rs=$('reportSummary');
+    if(rs&&window.MutationObserver) new MutationObserver(NX.addIcons).observe(rs,{childList:true});
+  }
+};
+NX.init();
 </script>
 </body>
 </html>
