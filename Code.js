@@ -116,7 +116,7 @@ const DEFAULT_SETTINGS = {
   adminPosition: 'ผู้จัดการ',
   docHeader: 'บริษัท นวนคร เคเบิลทีวี จำกัด',
   docFooter: 'ผู้พัฒนาระบบ สุทธิพงศ์ เบญจะมังคละ',
-  fiscalYear: '2568',
+  fiscalYear: '2569',
   rowsPerPage: '25',
   sessionMinutes: '180',
   logoUrl: ''
@@ -3509,5 +3509,123 @@ function apiKickUser(token, p) {
   } finally {
     try { lock.releaseLock(); } catch (x) {}
   }
+}
+/* =====================================================================
+ * ===================  ข้อมูลกราฟแดชบอร์ด (v4.1)  ===================
+ * วางเหนือบรรทัด var ZONES = zonesLoad_();
+ * ===================================================================*/
+
+/** แปลงวันที่ทุกรูปแบบเป็น 'yyyy-MM' (รองรับปี พ.ศ.) */
+function dcYm_(v) {
+  if (v === null || v === undefined || v === '') return '';
+  var d;
+  if (Object.prototype.toString.call(v) === '[object Date]') {
+    d = v;
+  } else {
+    var s = String(v).trim(), m, y;
+    m = s.match(/^(\d{4})-(\d{1,2})/);
+    if (m) { y = +m[1]; if (y > 2400) y -= 543; return y + '-' + ('0' + m[2]).slice(-2); }
+    m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (m) { y = +m[3]; if (y > 2400) y -= 543; return y + '-' + ('0' + m[2]).slice(-2); }
+    d = new Date(s.replace(/\s*\(.*\)\s*$/, ''));
+  }
+  if (isNaN(d.getTime())) return '';
+  var out = Utilities.formatDate(d, CONFIG.TZ, 'yyyy-MM');
+  var yy = +out.substring(0, 4);
+  return yy > 2400 ? (yy - 543) + out.substring(4) : out;
+}
+
+function dcDeleted_(v) { return v === true || String(v).trim().toUpperCase() === 'TRUE'; }
+
+function apiDashboardCharts(token, months, force) {
+  try {
+    requireAuth_(token, 'dashboard');
+    var N = parseInt(months, 10);
+    if ([6, 12, 24].indexOf(N) < 0) N = 12;
+    var key = 'DCHART_V1_' + N;
+
+    if (!force) {
+      try { var c = cacheSrv_().get(key); if (c) return ok_(JSON.parse(c)); } catch (e) {}
+    }
+
+    /* ---- เดือนย้อนหลัง N เดือน รวมเดือนปัจจุบัน ---- */
+    var cur = Utilities.formatDate(new Date(), CONFIG.TZ, 'yyyy-MM');
+    var cy = +cur.substring(0, 4), cm = +cur.substring(5, 7), keys = [], idx = {};
+    for (var i = N - 1; i >= 0; i--) {
+      var mm = cm - i, yy = cy;
+      while (mm < 1) { mm += 12; yy--; }
+      keys.push(yy + '-' + ('0' + mm).slice(-2));
+    }
+    keys.forEach(function (k, i) { idx[k] = i; });
+    function zeros() { return keys.map(function () { return 0; }); }
+
+    /* ---- โซน : เรียงตามลำดับที่ตั้งไว้ ---- */
+    var Z = ZONES || {}, zList = [], zMap = {};
+    function zNew(code, name) {
+      var o = { code: code, name: name, active: 0, suspended: 0, cancelled: 0, other: 0, revenue: 0 };
+      zList.push(o); zMap[code] = o; return o;
+    }
+    Object.keys(Z).sort(function (a, b) { return (Z[a].order || 999) - (Z[b].order || 999); })
+      .forEach(function (c) { zNew(c, Z[c].name || ('โซน ' + c)); });
+    function zGet(code) {
+      code = code || '(ไม่ระบุ)';
+      return zMap[code] || zNew(code, 'โซน ' + code + ' (ไม่อยู่ในระบบ)');
+    }
+
+    /* ---- ลูกค้า ---- */
+    var newC = zeros(), canC = zeros(), act = 0, rev = 0;
+    readSheet_(SHEETS.CUSTOMERS).rows.forEach(function (r) {
+      if (!String(r.CustomerID || '').trim() && !String(r.CustomerCode || '').trim()) return;
+      if (dcDeleted_(r.IsDeleted)) return;
+      var z = zGet(String(r.Zone || '').trim().toUpperCase());
+      var st = String(r.Status || '').trim();
+      var price = Number(String(r.PricePerMonth || '').replace(/[^0-9.\-]/g, '')) || 0;
+      if (st === 'ใช้บริการ') { z.active++; z.revenue += price; act++; rev += price; }
+      else if (st === 'ระงับสัญญาณ') z.suspended++;
+      else if (st === 'ยกเลิกใช้บริการ') z.cancelled++;
+      else z.other++;
+      var a = idx[dcYm_(r.ContractDate)]; if (a !== undefined) newC[a]++;
+      var b = idx[dcYm_(r.CancelDate)];   if (b !== undefined) canC[b]++;
+    });
+
+    /* ---- ใบงาน ---- */
+    var wDone = zeros(), wOpen = zeros(), wCan = zeros();
+    var wStatus = {}, wType = {}, cause = {}, wOpenAll = 0;
+    readSheet_(SHEETS.WORKORDERS).rows.forEach(function (r) {
+      if (!String(r.WorkOrderID || '').trim() && !String(r.DocNo || '').trim()) return;
+      if (dcDeleted_(r.IsDeleted)) return;
+      var st = String(r.Status || '').trim() || 'ไม่ระบุ';
+      var jt = String(r.JobType || '').trim() || 'ไม่ระบุ';
+      var ca = String(r.Cause || '').trim();
+      wStatus[st] = (wStatus[st] || 0) + 1;
+      wType[jt] = (wType[jt] || 0) + 1;
+      if (ca) cause[ca] = (cause[ca] || 0) + 1;
+      if (st === 'รอดำเนินการ' || st === 'กำลังดำเนินการ') wOpenAll++;
+      var k = idx[dcYm_(r.ReportDate)];
+      if (k === undefined) return;
+      if (st === 'เสร็จสิ้น') wDone[k]++;
+      else if (st === 'ยกเลิกใบงาน') wCan[k]++;
+      else wOpen[k]++;
+    });
+
+    var top = Object.keys(cause).map(function (c) { return [c, cause[c]]; })
+      .sort(function (a, b) { return b[1] - a[1]; }).slice(0, 8);
+    var L = keys.length - 1;
+
+    var out = {
+      months: keys,
+      zones: zList.filter(function (z) {
+        return Z[z.code] || (z.active + z.suspended + z.cancelled + z.other) > 0;
+      }),
+      cusMonthly: { newC: newC, cancel: canC },
+      woMonthly: { done: wDone, open: wOpen, cancelled: wCan },
+      woStatus: wStatus, woType: wType, causes: top,
+      kpi: { active: act, revenue: rev, newThisMonth: newC[L], cancelThisMonth: canC[L],
+             woOpen: wOpenAll, woDoneThisMonth: wDone[L] },
+      at: nowStr_()
+    };
+    try { cacheSrv_().put(key, JSON.stringify(out), 120); } catch (e) {}
+    return ok_(out);
+  } catch (e) { return handleErr_('apiDashboardCharts', e); }
 }
 var ZONES = zonesLoad_();

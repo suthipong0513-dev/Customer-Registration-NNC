@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 /* =====================================================================
  * 1) ตัวแปรระบบ
@@ -914,7 +915,240 @@ body.nx #btnLogin:hover{filter:brightness(1.07)}
 @media (prefers-reduced-motion:reduce){
   body.nx *{animation:none!important;transition:none!important}
 }
+/* =====================================================================
+ * v4.1 : โหมดมืด + แผงกราฟแดชบอร์ด
+ * ===================================================================*/
+@media screen{
+
+/* ---------- ปุ่มสลับโหมด ---------- */
+#btnDark{
+  width:34px;height:34px;border-radius:50%;flex:none;margin-right:8px;cursor:pointer;
+  display:inline-grid;place-items:center;border:1px solid var(--line);
+  background:var(--white);color:var(--ink-2);transition:color .15s,border-color .15s;
 }
+#btnDark svg{width:17px;height:17px}
+#btnDark:hover{color:var(--teal);border-color:var(--teal-l)}
+body:not(.nx) #btnDark{display:none}
+
+/* ---------- แผงกราฟ ---------- */
+.nxc{margin:16px 0}
+.nxc-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.nxc-head h3{font:700 17px/1.3 'Prompt','Sarabun',sans-serif;color:var(--ink)}
+.nxc-head span{font-size:12.5px;color:var(--muted)}
+.nxc-tools{display:flex;gap:8px;align-items:center}
+.nxc-tools .ctl{width:auto;min-width:120px;height:36px;padding:0 10px}
+.nxc-kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}
+.nxc-k{position:relative;overflow:hidden;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+.nxc-k::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:var(--teal)}
+.nxc-k.g::before{background:#22C55E}.nxc-k.b::before{background:#3B82F6}
+.nxc-k.r::before{background:#EF4444}.nxc-k.a::before{background:#F59E0B}
+.nxc-k span{display:block;font-size:12.5px;color:var(--muted);font-weight:600}
+.nxc-k b{display:block;font:700 22px/1.3 'Prompt','Sarabun',sans-serif;color:var(--ink);font-variant-numeric:tabular-nums}
+.nxc-k small{font-size:12px;color:var(--muted)}
+.nxc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:row dense;gap:12px}
+.nxc-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:14px 16px;min-width:0}
+.nxc-card.w2{grid-column:span 2}
+.nxc-t{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:8px}
+.nxc-box{position:relative;height:260px}
+.nxc-msg{margin-top:10px;padding:10px 14px;border-radius:10px;background:var(--amber-50);color:var(--amber);font-weight:600}
+@media (max-width:1100px){
+  .nxc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nxc-kpi{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:700px){
+  .nxc-grid{grid-template-columns:1fr}
+  .nxc-card.w2{grid-column:auto}
+}
+
+/* ---------- โหมดมืด ---------- */
+body.nx.nxd{
+  color-scheme:dark;
+  --white:#111E2B; --gray-50:#0E1A26; --bg:#0A131D;
+  --ink:#E6EEF5; --ink-2:#C2CFDB; --muted:#8799AA;
+  --line:#22354A; --line-2:#1A2B3C;
+  --teal-50:rgba(34,211,238,.10); --teal-100:rgba(34,211,238,.28);
+  --green:#34D399;  --green-50:rgba(52,211,153,.14);
+  --amber:#FBBF24;  --amber-50:rgba(251,191,36,.14);
+  --red:#F87171;    --red-50:rgba(248,113,113,.15);
+  --blue:#60A5FA;   --blue-50:rgba(96,165,250,.14);
+  --purple:#A78BFA; --purple-50:rgba(167,139,250,.15);
+  --sh-1:0 1px 2px rgba(0,0,0,.45); --sh-2:0 14px 30px -12px rgba(0,0,0,.75);
+  color:var(--ink);
+  background:
+    radial-gradient(1100px 480px at 100% -12%,rgba(34,211,238,.08),transparent 60%),
+    radial-gradient(900px 420px at -10% 110%,rgba(124,92,255,.08),transparent 60%),
+    var(--bg);
+}
+body.nx.nxd .stat, body.nx.nxd .nx-card, body.nx.nxd .modal-c, body.nx.nxd .modal-h,
+body.nx.nxd .login-card, body.nx.nxd .nxc-card, body.nx.nxd .nxc-k,
+body.nx.nxd #acList, body.nx.nxd #umenu{
+  background:var(--white)!important;border-color:var(--line)!important;color:var(--ink);
+}
+body.nx.nxd .nx-top{
+  background:var(--signal) bottom/100% 2px no-repeat, rgba(13,24,35,.84)!important;
+  box-shadow:0 1px 0 var(--line);
+}
+body.nx.nxd #pgTitle{color:#F1F6FA}
+body.nx.nxd #tbClock{background:var(--gray-50);border-color:var(--line);color:var(--ink-2)}
+body.nx.nxd .ctl{background:var(--gray-50);color:var(--ink);border-color:var(--line)}
+body.nx.nxd .ctl::placeholder{color:#6B7E90}
+body.nx.nxd .btn{color:#fff}
+body.nx.nxd .tbl thead th{background:#0F1C29;color:#9FB1C2;border-bottom-color:var(--line)}
+body.nx.nxd .tbl tbody tr:hover td{background:rgba(34,211,238,.06)}
+body.nx.nxd .tbl td.code, body.nx.nxd .chip, body.nx.nxd .tbl thead th.sort-on{color:#67E3EE}
+body.nx.nxd .tbl td.c-seq{color:#6B7E90}
+body.nx.nxd .nx-ico{background:rgba(34,211,238,.12);color:#67E3EE}
+body.nx.nxd .stat.g .nx-ico{background:rgba(52,211,153,.14);color:#34D399}
+body.nx.nxd .stat.a .nx-ico{background:rgba(251,191,36,.14);color:#FBBF24}
+body.nx.nxd .stat.r .nx-ico{background:rgba(248,113,113,.15);color:#F87171}
+body.nx.nxd .stat.b .nx-ico{background:rgba(96,165,250,.14);color:#60A5FA}
+body.nx.nxd .stat.p .nx-ico{background:rgba(167,139,250,.15);color:#A78BFA}
+body.nx.nxd ::-webkit-scrollbar-thumb{background:#2A3F55;border-color:var(--gray-50)}
+}
+@media print{ .nxc, #btnDark{display:none!important} }
+/* =====================================================================
+ * v4.1.1 : แก้โหมดมืด — ใช้คู่กับตัวปรับสีอัตโนมัติ (แพตช์ 28)
+ * ===================================================================*/
+@media screen{
+
+/* ---------- คลาสที่ตัวปรับสีอัตโนมัติใส่ให้ ---------- */
+body.nx.nxd .nxd-bg {background-color:var(--white)!important;border-color:var(--line)!important}
+body.nx.nxd .nxd-bg2{background-color:#0F1C29!important;border-color:var(--line)!important}
+body.nx.nxd .nxd-bd {border-color:var(--line)!important}
+body.nx.nxd .nxd-btn{background-color:#172738!important;border-color:#2A3F55!important;color:var(--ink)!important}
+body.nx.nxd .nxd-btn:hover{background-color:#1F3449!important;border-color:var(--teal-l)!important}
+body.nx.nxd .nxd-c  {color:var(--nxdc)!important}
+
+/* ---------- ตาราง : แถวสลับสี + แถวที่ชี้เมาส์ ---------- */
+body.nx.nxd table thead th{background-color:#0F1C29!important}
+body.nx.nxd table td, body.nx.nxd table th{border-color:var(--line-2)!important}
+body.nx.nxd table tbody tr > td{background-color:var(--white)!important}
+body.nx.nxd table tbody tr:nth-child(even) > td{background-color:#0E1A26!important}
+body.nx.nxd table tbody tr:hover > td{background-color:#13293A!important}
+
+/* ---------- แถบปุ่มด้านล่างหน้าต่าง ---------- */
+body.nx.nxd .modal-f, body.nx.nxd .modal-foot{
+  background-color:var(--white)!important;border-color:var(--line)!important;
+}
+
+/* ---------- ช่องกรอกข้อมูล ---------- */
+body.nx.nxd input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),
+body.nx.nxd select, body.nx.nxd textarea{
+  background-color:var(--gray-50)!important;color:var(--ink)!important;border-color:var(--line)!important;
+}
+body.nx.nxd input:disabled, body.nx.nxd input[readonly],
+body.nx.nxd select:disabled, body.nx.nxd textarea[readonly]{
+  background-color:#0C1620!important;color:var(--muted)!important;
+}
+body.nx.nxd input::placeholder, body.nx.nxd textarea::placeholder{color:#6B7E90!important;opacity:1}
+body.nx.nxd select option, body.nx.nxd select optgroup{background-color:#111E2B;color:#E6EEF5}
+body.nx.nxd input:-webkit-autofill{
+  -webkit-text-fill-color:var(--ink);box-shadow:0 0 0 1000px var(--gray-50) inset!important;
+}
+
+/* ลูกศรช่องเลือก */
+body.nx.nxd select:not([multiple]){
+  -webkit-appearance:none;appearance:none;padding-right:32px!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A9B8C6' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")!important;
+  background-repeat:no-repeat!important;background-position:right 11px center!important;background-size:15px!important;
+}
+
+/* ไอคอนปฏิทิน : ล็อกเป็นแบบสว่างแล้วกลับสี ให้ผลเหมือนกันทุกเบราว์เซอร์ */
+body.nx.nxd input[type=date], body.nx.nxd input[type=datetime-local],
+body.nx.nxd input[type=month], body.nx.nxd input[type=time]{color-scheme:light}
+body.nx.nxd input::-webkit-calendar-picker-indicator{filter:invert(.85);cursor:pointer}
+
+/* ---------- สถานะชี้เมาส์ที่ตัวปรับสีอัตโนมัติตรวจไม่ได้ ---------- */
+body.nx.nxd #umenu > *:hover, body.nx.nxd .ac-i:hover, body.nx.nxd .ac-i.on{
+  background-color:rgba(34,211,238,.10)!important;
+}
+}
+/* =====================================================================
+ * v4.2 : แบบฟอร์มพิมพ์ใบงานแจ้งช่าง (9 × 5.5 นิ้ว)
+ * ===================================================================*/
+#wopArea{display:none}
+@media print{
+  body.wop-on > *:not(#wopArea){display:none!important}
+  html, body.wop-on{background:#fff!important;margin:0!important;padding:0!important;
+    height:auto!important;min-height:0!important;overflow:visible!important}
+  body.wop-on #wopArea{display:block!important;position:static!important;visibility:visible!important}
+  body.wop-on #wopArea *{visibility:visible!important}
+}
+
+.wop, .wop *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.wop{
+  position:relative;width:9in;height:5.5in;overflow:hidden;
+  padding:.2in .28in .16in;background:#fff;color:#1A1F24;
+  font-family:'Sarabun',sans-serif;font-size:9.5pt;line-height:1.35;
+  display:flex;flex-direction:column;break-after:avoid;page-break-after:avoid;
+  --hd:#455A64; --hdt:#fff; --soft:#ECEFF1;
+}
+.wop.t-red   {--hd:#C62828;--hdt:#fff;    --soft:#FDECEA}
+.wop.t-yellow{--hd:#FFC400;--hdt:#3A2C00; --soft:#FFF6D6}
+.wop.t-orange{--hd:#EF6C00;--hdt:#fff;    --soft:#FFF0E0}
+.wop.t-green {--hd:#2E7D32;--hdt:#fff;    --soft:#E8F5E9}
+.wop.t-blue  {--hd:#0288D1;--hdt:#fff;    --soft:#E1F3FC}
+
+/* ---------- หัวกระดาษ ---------- */
+.wop-hd{display:flex;align-items:stretch;min-height:.8in;border-radius:8px;overflow:hidden;
+  background:var(--hd)!important;color:var(--hdt)}
+.wop-org{flex:1;min-width:0;padding:.08in .16in;display:flex;flex-direction:column;justify-content:center}
+.wop-org b{font-size:12.5pt;font-weight:800;line-height:1.25}
+.wop-org small{font-size:7.8pt;opacity:.95;margin-top:1px}
+.wop-ttl{padding:.06in .16in;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+  text-align:right;border-left:1px solid rgba(255,255,255,.4)}
+.wop.t-yellow .wop-ttl{border-left-color:rgba(58,44,0,.3)}
+.wop-ttl b{font-size:15.5pt;font-weight:800;line-height:1.15;white-space:nowrap}
+.wop-ttl small{font-size:7.3pt;font-weight:700;letter-spacing:1.6px;opacity:.92;margin-top:2px}
+.wop-no{margin:.07in;min-width:1.55in;padding:.04in .12in;border-radius:6px;
+  background:#fff!important;color:#1A1F24;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.wop-no span{font-size:7pt;color:#6B7680}
+.wop-no b{font:700 11.5pt/1.2 Consolas,'Courier New',monospace;letter-spacing:.3px}
+.wop-st{margin-top:3px;padding:0 9px;border-radius:99px;border:1px solid;font-style:normal;font-size:7.5pt;font-weight:700}
+.wop-st.ok  {color:#1B7A3D;border-color:#1B7A3D;background:#E8F5EC!important}
+.wop-st.wait{color:#9A6700;border-color:#C98A04;background:#FDF6E3!important}
+.wop-st.run {color:#1D4ED8;border-color:#2563C9;background:#EAF1FD!important}
+.wop-st.void{color:#6B7280;border-color:#9CA3AF;background:#F3F4F6!important}
+
+/* ---------- ตารางข้อมูล ---------- */
+.wop-grid{margin-top:.1in;display:grid;grid-template-columns:1.05fr 1.05fr 1fr 1.25fr;gap:1px;
+  border:1px solid #CFD6DC;border-radius:7px;overflow:hidden;background:#E1E6EA!important}
+.wop-f{background:#fff!important;padding:.035in .1in .045in;min-width:0}
+.wop-f.hl{background:var(--soft)!important}
+.wop-f.s2{grid-column:span 2}
+.wop-f span{display:block;font-size:7.3pt;color:#66727D;font-weight:600}
+.wop-f b{display:block;font-size:10.5pt;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wop-f.wrap b{white-space:normal;max-height:2.7em}
+.wop-f code{font-family:Consolas,'Courier New',monospace;font-size:10.5pt}
+.wop-nil{display:inline-block;width:75%;height:.9em;border-bottom:1px dotted #9AA5AF;vertical-align:bottom}
+.wop-nil.sm{width:1.1in}
+
+/* ---------- กล่องรายละเอียด ---------- */
+.wop-two{margin-top:.09in;flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:.1in}
+.wop-box{border:1px solid #CFD6DC;border-radius:7px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.wop-box h4{margin:0;padding:.025in .1in;font-size:8pt;font-weight:700;color:#2B3238;
+  background:var(--soft)!important;border-bottom:1px solid #E1E6EA;border-left:4px solid var(--hd)}
+.wop-bx{flex:1;min-height:0;overflow:hidden;padding:.05in .1in;font-size:10pt;word-break:break-word}
+.wop-bx.sm{font-size:8.8pt}
+.wop-bx.xs{font-size:7.8pt;line-height:1.25}
+.wop-lines{background:repeating-linear-gradient(to bottom,transparent 0,transparent .23in,#CBD3DA .23in,#CBD3DA calc(.23in + 1px))!important}
+
+/* ---------- ลายเซ็น ---------- */
+.wop-sig{margin-top:.1in;display:grid;grid-template-columns:repeat(4,1fr);gap:.18in;text-align:center}
+.wop-s .ln{height:.3in;border-bottom:1px dotted #555}
+.wop-s .nm{font-size:8.5pt;margin-top:2px;min-height:1.3em}
+.wop-s b{display:block;font-size:8.8pt;font-weight:700}
+.wop-s small{display:block;font-size:7pt;color:#7A858F}
+
+/* ---------- ท้ายกระดาษ ---------- */
+.wop-ft{margin-top:.06in;padding-top:.035in;border-top:1px solid #E1E6EA;
+  display:flex;justify-content:space-between;gap:10px;font-size:7pt;color:#7A858F}
+
+/* ---------- ลายน้ำใบงานที่ถูกยกเลิก ---------- */
+.wop-void{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%) rotate(-12deg);
+  font:800 40pt/1.1 'Sarabun',sans-serif;color:rgba(198,40,40,.14);white-space:nowrap;
+  border:5px solid rgba(198,40,40,.14);border-radius:14px;padding:0 .25in;pointer-events:none}
 </style>
 </head>
 <body>
@@ -5605,6 +5839,880 @@ var NX={
   }
 };
 NX.init();
+/* =====================================================================
+ * 27) v4.1 : แผงกราฟแดชบอร์ด + โหมดมืด
+ * ต้องวางหลังแพตช์ 26 (ธีม NNC Signal) เสมอ
+ * ===================================================================*/
+function arr_(list){ return Array.prototype.slice.call(list||[]); }
+
+var NXC={
+  months:12, charts:{}, data:null, at:0, tok:'', busy:false, el:null, obs:null, timer:null, bg:'#fff',
+  PAL:['#0A8A94','#22D3EE','#7C5CFF','#F59E0B','#EF4444','#22C55E','#3B82F6','#EC4899','#14B8A6','#A855F7'],
+  MON:['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],
+
+  lib:function(){ return typeof Chart!=='undefined'; },
+
+  /* หาหน้าแดชบอร์ดที่กำลังแสดงอยู่ */
+  page:function(){
+    var ps=arr_(qsa('.page')).filter(function(p){ return getComputedStyle(p).display!=='none'; });
+    if(ps.length===1) return ps[0];
+    var s=qs('[id^="dash"]');
+    return s?s.closest('.page,section,main'):null;
+  },
+
+  html:function(){
+    function card(id,t,w){ return '<div class="nxc-card'+(w?' w2':'')+'"><div class="nxc-t">'+t+'</div><div class="nxc-box"><canvas id="'+id+'"></canvas></div></div>'; }
+    return '<div class="nxc-head"><div><h3>ภาพรวมเชิงกราฟ</h3><span id="nxcSub">กำลังเตรียมข้อมูล...</span></div>'+
+      '<div class="nxc-tools"><select class="ctl" id="nxcRange">'+
+      '<option value="6">ย้อนหลัง 6 เดือน</option><option value="12">ย้อนหลัง 12 เดือน</option><option value="24">ย้อนหลัง 24 เดือน</option>'+
+      '</select><button type="button" class="btn btn-sm" id="nxcReload">รีเฟรช</button></div></div>'+
+      '<div class="nxc-kpi" id="nxcKpi"></div>'+
+      '<div class="nxc-grid">'+
+        card('nxcZone','ลูกค้าแยกตามโซนและสถานะ',true)+
+        card('nxcRev','สัดส่วนรายได้ต่อเดือนตามโซน')+
+        card('nxcCus','ลูกค้าใหม่ เทียบกับ ยกเลิกใช้บริการ (รายเดือน)',true)+
+        card('nxcType','ประเภทใบงาน')+
+        card('nxcWo','ใบงานแจ้งช่างรายเดือน',true)+
+        card('nxcCause','สาเหตุแจ้งซ่อม 8 อันดับแรก')+
+      '</div><div class="nxc-msg hide" id="nxcMsg"></div>';
+  },
+
+  mount:function(){
+    var pg=NXC.page(); if(!pg) return false;
+    if(NXC.el&&pg.contains(NXC.el)) return true;
+    if(NXC.el&&NXC.el.parentNode) NXC.el.parentNode.removeChild(NXC.el);
+
+    var d=document.createElement('div');
+    d.className='nxc'; d.id='nxcPanel'; d.innerHTML=NXC.html();
+
+    /* วางต่อจากกลุ่มการ์ดสถิติ ในระดับเดียวกับเนื้อหาหน้า */
+    var st=qs('.stat',pg), anchor=null;
+    if(st){ anchor=st; while(anchor.parentElement&&anchor.parentElement!==pg) anchor=anchor.parentElement; }
+    if(anchor&&anchor.parentElement===pg) pg.insertBefore(d,anchor.nextSibling);
+    else pg.insertBefore(d,pg.firstChild);
+    NXC.el=d;
+
+    $('nxcRange').value=String(NXC.months);
+    $('nxcRange').addEventListener('change',function(){
+      NXC.months=parseInt(this.value,10)||12; NXC.load(false);
+    });
+    $('nxcReload').addEventListener('click',function(){ NXC.load(true); });
+    NXC.watch(pg);
+    return true;
+  },
+
+  /* ถ้าแดชบอร์ดเดิมวาดหน้าใหม่จนแผงกราฟหายไป ให้ใส่กลับเอง */
+  watch:function(pg){
+    if(!window.MutationObserver) return;
+    if(NXC.obs) NXC.obs.disconnect();
+    NXC.obs=new MutationObserver(function(){
+      if(APP.page!=='dashboard'||!NXC.el||pg.contains(NXC.el)) return;
+      clearTimeout(NXC.timer);
+      NXC.timer=setTimeout(function(){
+        NXC.el=null;
+        if(NXC.mount()&&NXC.data) NXC.render();
+      },60);
+    });
+    NXC.obs.observe(pg,{childList:true});
+  },
+
+  setSub:function(t){ var s=$('nxcSub'); if(s) s.textContent=t; },
+  msg:function(t){
+    var m=$('nxcMsg'); if(!m) return;
+    m.textContent=t||''; m.classList[t?'remove':'add']('hide');
+  },
+
+  show:function(){
+    if(APP.page!=='dashboard'||!APP.token) return;
+    if(!NXC.mount()) return;
+    if(!NXC.lib()){ NXC.msg('โหลดไลบรารีกราฟไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วกด Ctrl+F5'); return; }
+    if(NXC.data&&NXC.tok===APP.token&&Date.now()-NXC.at<60000){ NXC.render(); return; }
+    NXC.load(false);
+  },
+
+  load:function(force){
+    if(!APP.token||!NXC.el||NXC.busy) return;
+    NXC.busy=true;
+    var tok=APP.token, mo=NXC.months;
+    NXC.setSub('กำลังโหลดข้อมูลกราฟ...');
+    gas('apiDashboardCharts',[tok,mo,!!force],function(d){
+      NXC.busy=false;
+      if(APP.token!==tok) return;
+      if(mo!==NXC.months){ NXC.load(false); return; }   /* เปลี่ยนช่วงเวลาระหว่างโหลด */
+      NXC.data=d; NXC.at=Date.now(); NXC.tok=tok;
+      NXC.render();
+    },{silent:true,onFail:function(){
+      NXC.busy=false;
+      NXC.setSub('');
+      NXC.msg('โหลดข้อมูลกราฟไม่สำเร็จ กดรีเฟรชเพื่อลองใหม่');
+    }});
+  },
+
+  retheme:function(){
+    if(NXC.data&&NXC.el&&document.body.contains(NXC.el)&&APP.page==='dashboard') NXC.render();
+  },
+
+  theme:function(){
+    var dk=(typeof NXD!=='undefined')&&NXD.isActive();
+    Chart.defaults.font.family="'Sarabun',sans-serif";
+    Chart.defaults.font.size=12;
+    Chart.defaults.color=dk?'#A9B8C6':'#5B6B7A';
+    Chart.defaults.borderColor=dk?'rgba(255,255,255,.08)':'rgba(10,23,36,.08)';
+    NXC.bg=dk?'#111E2B':'#FFFFFF';
+  },
+
+  ml:function(k){
+    var y=parseInt(k.substring(0,4),10), m=parseInt(k.substring(5,7),10);
+    return NXC.MON[m]+' '+String(y+543).slice(-2);
+  },
+
+  opt:function(o){
+    o=o||{}; var unit=o.unit||'';
+    var r={
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:o.mode||'index',intersect:false},
+      plugins:{
+        legend:{display:o.legend!==false,position:'bottom',labels:{usePointStyle:true,boxWidth:8,padding:14}},
+        tooltip:{enabled:o.tip!==false,callbacks:{label:function(c){
+          var p=c.parsed, v=(typeof p==='number')?p:(o.horizontal?p.x:p.y);
+          var n=(c.chart.config.type==='doughnut')?c.label:c.dataset.label;
+          return ' '+n+' : '+nf(v)+unit;
+        }}}
+      }
+    };
+    if(o.title) r.plugins.tooltip.callbacks.title=o.title;
+    if(o.scales) r.scales=o.scales;
+    if(o.horizontal) r.indexAxis='y';
+    if(o.cutout) r.cutout=o.cutout;
+    return r;
+  },
+  stack:function(){
+    return {x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}};
+  },
+
+  mk:function(id,cfg){
+    if(NXC.charts[id]){ try{ NXC.charts[id].destroy(); }catch(e){} delete NXC.charts[id]; }
+    var cv=$(id); if(!cv) return;
+    NXC.charts[id]=new Chart(cv,cfg);
+  },
+
+  donut:function(id,labels,vals,unit){
+    var sum=vals.reduce(function(a,b){ return a+(+b||0); },0), empty=!sum;
+    NXC.mk(id,{type:'doughnut',
+      data:{labels:empty?['ไม่มีข้อมูล']:labels,
+        datasets:[{data:empty?[1]:vals,
+          backgroundColor:empty?['rgba(127,140,155,.25)']:labels.map(function(_,i){ return NXC.PAL[i%NXC.PAL.length]; }),
+          borderColor:NXC.bg,borderWidth:2,hoverOffset:6}]},
+      options:NXC.opt({unit:unit,mode:'nearest',cutout:'62%',tip:!empty})});
+  },
+
+  kpi:function(k){
+    function box(lb,v,sub,c){ return '<div class="nxc-k '+c+'"><span>'+lb+'</span><b>'+v+'</b><small>'+sub+'</small></div>'; }
+    $('nxcKpi').innerHTML=
+      box('ลูกค้าที่ใช้บริการ',nf(k.active),'ราย','g')+
+      box('รายได้ต่อเดือน',nf(k.revenue),'บาท (เฉพาะลูกค้าที่ใช้บริการ)','b')+
+      box('ลูกค้าใหม่เดือนนี้',nf(k.newThisMonth),'ยกเลิกเดือนนี้ '+nf(k.cancelThisMonth)+' ราย',
+          k.newThisMonth>=k.cancelThisMonth?'g':'r')+
+      box('ใบงานค้าง',nf(k.woOpen),'ปิดงานเดือนนี้ '+nf(k.woDoneThisMonth)+' ใบ','a');
+  },
+
+  render:function(){
+    var d=NXC.data;
+    if(!d||!NXC.el||!document.body.contains(NXC.el)) return;
+    if(!NXC.lib()){ NXC.msg('โหลดไลบรารีกราฟไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วกด Ctrl+F5'); return; }
+    NXC.msg('');
+    NXC.setSub('ย้อนหลัง '+d.months.length+' เดือน • อัปเดตเมื่อ '+
+      new Date(NXC.at).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})+' น.');
+    NXC.kpi(d.kpi);
+    NXC.theme();
+
+    var ML=d.months.map(NXC.ml), Z=d.zones||[];
+
+    NXC.mk('nxcZone',{type:'bar',
+      data:{labels:Z.map(function(z){ return z.code; }),datasets:[
+        {label:'ใช้บริการ',data:Z.map(function(z){ return z.active; }),backgroundColor:'#22C55E',borderRadius:4},
+        {label:'ระงับสัญญาณ',data:Z.map(function(z){ return z.suspended; }),backgroundColor:'#F59E0B',borderRadius:4},
+        {label:'ยกเลิกใช้บริการ',data:Z.map(function(z){ return z.cancelled; }),backgroundColor:'#EF4444',borderRadius:4}
+      ]},
+      options:NXC.opt({unit:' ราย',scales:NXC.stack(),
+        title:function(it){ var z=Z[it[0].dataIndex]; return z?z.name:''; }})});
+
+    NXC.donut('nxcRev',Z.map(function(z){ return z.name; }),Z.map(function(z){ return z.revenue; }),' บาท');
+
+    NXC.mk('nxcCus',{type:'line',
+      data:{labels:ML,datasets:[
+        {label:'ลูกค้าใหม่',data:d.cusMonthly.newC,borderColor:'#0A8A94',backgroundColor:'rgba(10,138,148,.14)',
+         fill:true,tension:.35,pointRadius:3,pointHoverRadius:5},
+        {label:'ยกเลิกใช้บริการ',data:d.cusMonthly.cancel,borderColor:'#EF4444',backgroundColor:'rgba(239,68,68,.08)',
+         fill:true,tension:.35,pointRadius:3,pointHoverRadius:5}
+      ]},
+      options:NXC.opt({unit:' ราย',scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{precision:0}}}})});
+
+    NXC.mk('nxcWo',{type:'bar',
+      data:{labels:ML,datasets:[
+        {label:'เสร็จสิ้น',data:d.woMonthly.done,backgroundColor:'#22C55E',borderRadius:4},
+        {label:'ค้างดำเนินการ',data:d.woMonthly.open,backgroundColor:'#F59E0B',borderRadius:4},
+        {label:'ยกเลิกใบงาน',data:d.woMonthly.cancelled,backgroundColor:'#94A3B8',borderRadius:4}
+      ]},
+      options:NXC.opt({unit:' ใบ',scales:NXC.stack()})});
+
+    var T=d.woType||{}, tk=Object.keys(T);
+    NXC.donut('nxcType',tk,tk.map(function(k){ return T[k]; }),' ใบ');
+
+    var C=d.causes||[];
+    NXC.mk('nxcCause',{type:'bar',
+      data:{labels:C.length?C.map(function(c){ return c[0]; }):['ไม่มีข้อมูล'],
+        datasets:[{label:'จำนวน',data:C.length?C.map(function(c){ return c[1]; }):[0],
+          backgroundColor:'#7C5CFF',borderRadius:4}]},
+      options:NXC.opt({unit:' ครั้ง',horizontal:true,legend:false,
+        scales:{x:{beginAtZero:true,ticks:{precision:0}},y:{grid:{display:false}}}})});
+  }
+};
+
+/* ---------- โหมดมืด ---------- */
+var NXD={
+  KEY:'nnc_dark_v1',
+  SUN:'<circle cx="12" cy="12" r="4.5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>',
+  MOON:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+
+  saved:function(){ try{ return localStorage.getItem(NXD.KEY); }catch(e){ return null; } },
+  pref:function(){
+    var v=NXD.saved();
+    if(v==='on') return true;
+    if(v==='off') return false;
+    return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+  },
+  isActive:function(){
+    var c=document.body.classList;
+    return c.contains('nx')&&c.contains('nxd');
+  },
+  apply:function(on,save){
+    document.body.classList[on?'add':'remove']('nxd');
+    if(save){ try{ localStorage.setItem(NXD.KEY,on?'on':'off'); }catch(e){} }
+    NXD.paint();
+    NXC.retheme();
+  },
+  toggle:function(){
+    if(!document.body.classList.contains('nx')) NX.set(true);
+    NXD.apply(!document.body.classList.contains('nxd'),true);
+  },
+  paint:function(){
+    var b=$('btnDark'); if(!b) return;
+    var on=NXD.isActive();
+    b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+      (on?NXD.SUN:NXD.MOON)+'</svg>';
+    b.title=on?'เปลี่ยนเป็นโหมดสว่าง':'เปลี่ยนเป็นโหมดมืด';
+    b.setAttribute('aria-label',b.title);
+  },
+  mount:function(){
+    var c=$('tbClock'); if(!c||$('btnDark')) return;
+    var b=document.createElement('button');
+    b.type='button'; b.id='btnDark';
+    c.parentNode.insertBefore(b,c);
+    b.addEventListener('click',function(e){ e.stopPropagation(); NXD.toggle(); });
+  }
+};
+
+/* ---------- เริ่มทำงาน ---------- */
+NXD.mount();
+NXD.apply(NXD.pref(),false);
+
+/* สลับธีม NNC Signal แล้ว ให้ปุ่มและกราฟเปลี่ยนสีตาม */
+(function(){
+  var o=NX.set;
+  NX.set=function(on){ o(on); NXD.paint(); NXC.retheme(); };
+})();
+
+/* เปิดหน้าแดชบอร์ดเมื่อไร ให้แสดงกราฟ */
+(function(){
+  var o=gotoPage;
+  gotoPage=function(p){
+    var r=o.apply(this,arguments);
+    if(p==='dashboard') setTimeout(NXC.show,0);
+    return r;
+  };
+})();
+
+/* ผู้ใช้ยังไม่เคยเลือกโหมดเอง ให้เปลี่ยนตามการตั้งค่าของเครื่อง */
+if(window.matchMedia){
+  var nxdMq=matchMedia('(prefers-color-scheme: dark)');
+  var nxdFn=function(e){ if(!NXD.saved()) NXD.apply(e.matches,false); };
+  if(nxdMq.addEventListener) nxdMq.addEventListener('change',nxdFn);
+  else if(nxdMq.addListener) nxdMq.addListener(nxdFn);
+}
+/* =====================================================================
+ * 28) v4.1.1 : ตัวปรับสีอัตโนมัติสำหรับโหมดมืด
+ * ต้องวางหลังแพตช์ 27 เสมอ
+ * ===================================================================*/
+var NXF={
+  /* ส่วนที่ตั้งใจให้มีสีเฉพาะ ไม่ต้องปรับ */
+  SKIP:'#sidebar,.badge,[class*="bg-"],mark,.hl,[class*="ico-"],.nx-live,.sb-logo,.login-logo,#uAvatar,#btnDark',
+  NOTAG:{INPUT:1,SELECT:1,TEXTAREA:1,OPTION:1,OPTGROUP:1,SCRIPT:1,STYLE:1,CANVAS:1,IMG:1,BR:1,LINK:1,META:1,TITLE:1,TEMPLATE:1},
+  MAX:20000, q:[], t:null,
+
+  rgba:function(s){
+    var m=/rgba?\(([^)]+)\)/.exec(s||''); if(!m) return null;
+    var p=m[1].replace(/[,\/]/g,' ').trim().split(/\s+/);
+    if(p.length<3) return null;
+    var a=1;
+    if(p.length>3){ a=parseFloat(p[3]); if(p[3].indexOf('%')>0) a=a/100; }
+    return {r:+p[0],g:+p[1],b:+p[2],a:isNaN(a)?1:a};
+  },
+  lum:function(c){
+    function f(v){ v/=255; return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4); }
+    return 0.2126*f(c.r)+0.7152*f(c.g)+0.0722*f(c.b);
+  },
+  hsl:function(c){
+    var r=c.r/255,g=c.g/255,b=c.b/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b);
+    var h=0,s=0,l=(mx+mn)/2,d=mx-mn;
+    if(d){
+      s=d/(1-Math.abs(2*l-1));
+      if(mx===r) h=((g-b)/d)%6; else if(mx===g) h=(b-r)/d+2; else h=(r-g)/d+4;
+      h*=60; if(h<0) h+=360;
+    }
+    return {h:h,s:Math.min(1,s),l:l};
+  },
+  /* ทำให้สว่างขึ้นโดยคงเฉดสีเดิม : แดงยังเป็นแดง เขียวอมฟ้ายังเป็นเขียวอมฟ้า */
+  lighten:function(c,L){
+    var x=NXF.hsl(c), s, l;
+    if(x.s<0.35){ s=Math.min(x.s,0.15); l=L<0.08?0.86:0.74; }
+    else { s=Math.min(x.s,0.9); l=Math.max(x.l,0.70); }
+    return 'hsl('+Math.round(x.h)+','+Math.round(s*100)+'%,'+Math.round(l*100)+'%)';
+  },
+  ownText:function(el){
+    for(var n=el.firstChild;n;n=n.nextSibling){
+      if(n.nodeType===3&&n.nodeValue.trim()) return true;
+      if(n.nodeName&&n.nodeName.toLowerCase()==='svg') return true;   /* ไอคอนใช้สีตัวอักษร */
+    }
+    return false;
+  },
+  lightBorder:function(cs){
+    var sides=['Top','Right','Bottom','Left'];
+    for(var i=0;i<4;i++){
+      if(!(parseFloat(cs['border'+sides[i]+'Width'])>0)) continue;
+      if(cs['border'+sides[i]+'Style']==='none') continue;
+      var c=NXF.rgba(cs['border'+sides[i]+'Color']);
+      if(c&&c.a>0.3&&NXF.lum(c)>0.55) return true;
+    }
+    return false;
+  },
+
+  scan:function(roots){
+    if(!NXD.isActive()) return;
+    var els=[], i, j;
+    for(i=0;i<roots.length;i++){
+      var r=roots[i];
+      if(!r||r.nodeType!==1||!document.body.contains(r)) continue;
+      if(r instanceof HTMLElement) els.push(r);
+      var all=r.getElementsByTagName('*');
+      for(j=0;j<all.length&&els.length<NXF.MAX;j++) if(all[j] instanceof HTMLElement) els.push(all[j]);
+    }
+
+    /* อ่านค่าทั้งหมดก่อน แล้วค่อยเขียน หน้าเว็บจะไม่ต้องคำนวณสไตล์ใหม่ซ้ำ ๆ */
+    var todo=[];
+    for(i=0;i<els.length;i++){
+      var el=els[i];
+      if(NXF.NOTAG[el.tagName]||el.closest(NXF.SKIP)) continue;
+      var cs=getComputedStyle(el), job={el:el}, any=false;
+      var isBtn=el.tagName==='BUTTON'||el.classList.contains('btn');
+
+      var bg=NXF.rgba(cs.backgroundColor);
+      if(bg&&bg.a>=0.5){
+        var L=NXF.lum(bg);
+        if(isBtn){ if(L>0.6||L<0.03){ job.btn=1; any=true; } }
+        else if(L>0.6){ job.bg=L>0.9?1:2; any=true; }
+      }
+      if(!isBtn&&!job.bg&&NXF.lightBorder(cs)){ job.bd=1; any=true; }
+
+      if(!job.btn&&NXF.ownText(el)){
+        var c=NXF.rgba(cs.color);
+        if(c&&c.a>0.3){
+          var cl=NXF.lum(c), sat=NXF.hsl(c).s;
+          if((sat>=0.35&&cl<0.22)||(sat<0.35&&cl<0.18)){ job.c=NXF.lighten(c,cl); any=true; }
+        }
+      }
+      if(any) todo.push(job);
+    }
+
+    for(i=0;i<todo.length;i++){
+      var t=todo[i];
+      if(t.btn) t.el.classList.add('nxd-btn');
+      if(t.bg)  t.el.classList.add(t.bg===1?'nxd-bg':'nxd-bg2');
+      if(t.bd)  t.el.classList.add('nxd-bd');
+      if(t.c){ t.el.style.setProperty('--nxdc',t.c); t.el.classList.add('nxd-c'); }
+    }
+  },
+
+  full:function(){ NXF.q=[]; NXF.scan([document.body]); },
+  flush:function(){ var r=NXF.q; NXF.q=[]; NXF.scan(r); }
+};
+
+/* ปรับสีส่วนที่เพิ่งถูกสร้างขึ้น เช่น แถวตาราง ข้อความแจ้งเตือน และหน้าต่างต่าง ๆ */
+if(window.MutationObserver){
+  new MutationObserver(function(ms){
+    if(!NXD.isActive()) return;
+    for(var i=0;i<ms.length;i++){
+      var a=ms[i].addedNodes;
+      for(var j=0;j<a.length;j++) if(a[j].nodeType===1) NXF.q.push(a[j]);
+    }
+    if(!NXF.q.length) return;                 /* นาฬิกาเปลี่ยนแค่ข้อความ จึงไม่ต้องสแกน */
+    if(NXF.q.length>400) NXF.q=[document.body];
+    clearTimeout(NXF.t);
+    NXF.t=setTimeout(NXF.flush,80);
+  }).observe(document.body,{childList:true,subtree:true});
+}
+
+/* เปิดโหมดมืดหรือสลับธีมเมื่อไร ให้สแกนทั้งหน้า */
+(function(){
+  var oa=NXD.apply;
+  NXD.apply=function(on,save){ oa(on,save); if(NXD.isActive()) setTimeout(NXF.full,0); };
+  var os=NX.set;
+  NX.set=function(on){ os(on); if(NXD.isActive()) setTimeout(NXF.full,0); };
+})();
+
+if(NXD.isActive()) NXF.full();
+/* =====================================================================
+ * 29) v4.2.1 : แบบฟอร์มพิมพ์ใบงานแจ้งช่าง (เอกสารแยก 9 × 5.5 นิ้ว)
+ *     + สีกราฟประเภทใบงานตามสีหัวกระดาษ
+ * ต้องวางหลังแพตช์ 28 เสมอ
+ * ===================================================================*/
+var WOP={
+  MON:['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],
+  /* ลำดับสำคัญ : ตรวจ "ยกเลิก" ก่อน และตรวจ "ต่อ" เป็นลำดับสุดท้าย */
+  TYPES:[
+    {k:'ยกเลิก',  hd:'#C62828',t:'#FFFFFF',soft:'#FDECEA',sep:'rgba(255,255,255,.45)',en:'SIGNAL CANCELLATION', d:'วันที่ยกเลิก',      r:'สาเหตุที่ยกเลิก'},
+    {k:'ระงับ',   hd:'#FFC400',t:'#3A2C00',soft:'#FFF6D6',sep:'rgba(58,44,0,.30)',    en:'SIGNAL SUSPENSION',   d:'วันที่ระงับสัญญาณ', r:'สาเหตุที่ระงับ'},
+    {k:'ซ่อม',    hd:'#EF6C00',t:'#FFFFFF',soft:'#FFF0E0',sep:'rgba(255,255,255,.45)',en:'SIGNAL REPAIR',       d:'วันที่ซ่อม',         r:'สาเหตุที่ซ่อม'},
+    {k:'เปลี่ยน', hd:'#0288D1',t:'#FFFFFF',soft:'#E1F3FC',sep:'rgba(255,255,255,.45)',en:'CUSTOMER DATA UPDATE',d:'วันที่ดำเนินการ',   r:'รายการที่เปลี่ยนแปลง'},
+    {k:'ต่อ',     hd:'#2E7D32',t:'#FFFFFF',soft:'#E8F5E9',sep:'rgba(255,255,255,.45)',en:'SIGNAL CONNECTION',   d:'วันที่ต่อสัญญาณ',   r:'เหตุผลการต่อสัญญาณ'}
+  ],
+  DEF:{hd:'#546E7A',t:'#FFFFFF',soft:'#ECEFF1',sep:'rgba(255,255,255,.45)',en:'SERVICE ORDER',d:'วันที่นัดหมาย',r:'สาเหตุ'},
+  busy:false,
+
+  rank:function(jt){
+    var s=String(jt||'');
+    for(var i=0;i<WOP.TYPES.length;i++) if(s.indexOf(WOP.TYPES[i].k)>=0) return i;
+    return 99;
+  },
+  type:function(jt){ var i=WOP.rank(jt); return i<99?WOP.TYPES[i]:WOP.DEF; },
+
+  /* ---------- วันที่ ---------- */
+  ymd:function(y,m,d,raw){
+    if(m<1||m>12||d<1||d>31) return raw;
+    if(y<2400) y+=543;
+    return d+' '+WOP.MON[m]+' '+y;
+  },
+  date:function(s){
+    if(s===null||s===undefined) return '';
+    var t=String(s).trim(), m;
+    if(!t) return '';
+    m=t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if(m) return WOP.ymd(+m[1],+m[2],+m[3],t);
+    m=t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if(m) return WOP.ymd(+m[3],+m[2],+m[1],t);
+    var d=new Date(t.replace(/\s*\(.*\)\s*$/,''));
+    if(isNaN(d.getTime())) return t;
+    return WOP.ymd(d.getFullYear(),d.getMonth()+1,d.getDate(),t);
+  },
+  stamp:function(){
+    var d=new Date();
+    return d.getDate()+' '+WOP.MON[d.getMonth()+1]+' '+(d.getFullYear()+543)+' '+
+      ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+' น.';
+  },
+
+  v:function(x){
+    var s=String(x===null||x===undefined?'':x).trim();
+    return s?esc(s):'<i class="wop-nil"></i>';
+  },
+  txt:function(x){ return esc(String(x||'').trim()).replace(/\r?\n/g,'<br>'); },
+  st:function(s){
+    var m={'เสร็จสิ้น':'ok','รอดำเนินการ':'wait','กำลังดำเนินการ':'run','ยกเลิกใบงาน':'void'};
+    return m[String(s||'').trim()]||'wait';
+  },
+
+  org:function(){
+    var S=APP.settings||{};
+    function p(ks){
+      for(var i=0;i<ks.length;i++){
+        var v=S[ks[i]];
+        if(v!==undefined&&v!==null&&String(v).trim()) return String(v).trim();
+      }
+      return '';
+    }
+    var lo=$('loginOrg');
+    var name=p(['orgName','companyName','OrgName','CompanyName','org_name'])||
+             (lo?lo.textContent.trim():'')||'บริษัท นวนคร เคเบิลทีวี จำกัด';
+    var addr=p(['orgAddress','companyAddress','OrgAddress','CompanyAddress','address'])||
+             '58/242 ม.13 ต.คลองหนึ่ง อ.คลองหลวง จ.ปทุมธานี 12120';
+    var tel=p(['orgPhone','companyPhone','OrgPhone','phone','tel'])||'02-529-2000';
+    if(/โทร/.test(addr)) tel='';
+    return {name:name,addr:addr,tel:tel};
+  },
+  zone:function(w){
+    var n='';
+    try{ if(w.zone&&typeof ZN!=='undefined') n=(ZN.info(w.zone)||{}).name||''; }catch(e){}
+    return n||w.zoneName||w.zone||'';
+  },
+
+  /* ---------- CSS ฝังในเอกสารพิมพ์ (ไม่ขึ้นกับ CSS ของหน้าเว็บ) ---------- */
+  CSS:[
+    '@page{size:9in 5.5in;margin:0}',
+    '*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}',
+    'html,body{margin:0;padding:0;background:#fff}',
+    'body{font-family:"Sarabun",Tahoma,sans-serif;color:#1A1F24}',
+    '.wop{position:relative;width:9in;height:5.45in;overflow:hidden;padding:.2in .28in .14in;font-size:9.5pt;line-height:1.35;display:flex;flex-direction:column;break-after:avoid;page-break-after:avoid}',
+    '.wop-hd{display:flex;align-items:stretch;min-height:.78in;border-radius:8px;overflow:hidden;background:var(--hd);color:var(--hdt)}',
+    '.wop-org{flex:1;min-width:0;padding:.08in .16in;display:flex;flex-direction:column;justify-content:center}',
+    '.wop-org b{font-size:12.5pt;font-weight:800;line-height:1.25}',
+    '.wop-org small{font-size:7.8pt;margin-top:1px}',
+    '.wop-ttl{padding:.06in .16in;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;text-align:right;border-left:1px solid var(--sep)}',
+    '.wop-ttl b{font-size:15pt;font-weight:800;line-height:1.15;white-space:nowrap}',
+    '.wop-ttl.long b{font-size:12.5pt}',
+    '.wop-ttl small{font-size:7.3pt;font-weight:700;letter-spacing:1.5px;margin-top:2px}',
+    '.wop-no{margin:.07in;min-width:1.55in;padding:.04in .12in;border-radius:6px;background:#fff;color:#1A1F24;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}',
+    '.wop-no span{font-size:7pt;color:#6B7680}',
+    '.wop-no b{font:700 11.5pt/1.2 Consolas,"Courier New",monospace}',
+    '.wop-st{margin-top:3px;padding:0 9px;border-radius:99px;border:1px solid;font-style:normal;font-size:7.5pt;font-weight:700}',
+    '.wop-st.ok{color:#1B7A3D;border-color:#1B7A3D;background:#E8F5EC}',
+    '.wop-st.wait{color:#9A6700;border-color:#C98A04;background:#FDF6E3}',
+    '.wop-st.run{color:#1D4ED8;border-color:#2563C9;background:#EAF1FD}',
+    '.wop-st.void{color:#6B7280;border-color:#9CA3AF;background:#F3F4F6}',
+    '.wop-grid{margin-top:.1in;display:grid;grid-template-columns:1.05fr 1.05fr 1fr 1.25fr;gap:1px;border:1px solid #CFD6DC;border-radius:7px;overflow:hidden;background:#E1E6EA}',
+    '.wop-f{background:#fff;padding:.035in .1in .045in;min-width:0}',
+    '.wop-f.hl{background:var(--soft)}',
+    '.wop-f.s2{grid-column:span 2}',
+    '.wop-f span{display:block;font-size:7.3pt;color:#66727D;font-weight:600}',
+    '.wop-f b{display:block;font-size:10.5pt;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '.wop-f.wrap b{white-space:normal;max-height:2.7em}',
+    '.wop-f code{font:700 10.5pt Consolas,"Courier New",monospace}',
+    '.wop-nil{display:inline-block;width:75%;height:.9em;border-bottom:1px dotted #9AA5AF;vertical-align:bottom}',
+    '.wop-nil.sm{width:1.1in}',
+    '.wop-two{margin-top:.09in;flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:.1in}',
+    '.wop-box{border:1px solid #CFD6DC;border-radius:7px;overflow:hidden;display:flex;flex-direction:column;min-height:0}',
+    '.wop-box h4{margin:0;padding:.025in .1in;font-size:8pt;font-weight:700;color:#2B3238;background:var(--soft);border-bottom:1px solid #E1E6EA;border-left:4px solid var(--hd)}',
+    '.wop-bx{flex:1;min-height:0;overflow:hidden;padding:.05in .1in;font-size:10pt;word-break:break-word}',
+    '.wop-bx.sm{font-size:8.8pt}',
+    '.wop-bx.xs{font-size:7.8pt;line-height:1.25}',
+    '.wop-lines{background:repeating-linear-gradient(to bottom,transparent 0,transparent .23in,#CBD3DA .23in,#CBD3DA calc(.23in + 1px))}',
+    '.wop-sig{margin-top:.1in;display:grid;grid-template-columns:repeat(4,1fr);gap:.18in;text-align:center}',
+    '.wop-s .ln{height:.3in;border-bottom:1px dotted #555}',
+    '.wop-s .nm{font-size:8.5pt;margin-top:2px;min-height:1.3em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '.wop-s b{display:block;font-size:8.8pt;font-weight:700}',
+    '.wop-s small{display:block;font-size:7pt;color:#7A858F}',
+    '.wop-ft{margin-top:.06in;padding-top:.035in;border-top:1px solid #E1E6EA;display:flex;justify-content:space-between;gap:10px;font-size:7pt;color:#7A858F}',
+    '.wop-void{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%) rotate(-12deg);font:800 40pt/1.1 "Sarabun",sans-serif;color:rgba(198,40,40,.14);white-space:nowrap;border:5px solid rgba(198,40,40,.14);border-radius:14px;padding:0 .25in;pointer-events:none}'
+  ].join('\n'),
+
+  box:function(title,val){
+    var s=String(val||'').trim();
+    var cls=!s?'wop-lines':(s.length>380?'xs':(s.length>200?'sm':''));
+    return '<div class="wop-box"><h4>'+title+'</h4><div class="wop-bx '+cls+'">'+(s?WOP.txt(s):'')+'</div></div>';
+  },
+
+  html:function(w){
+    var T=WOP.type(w.jobType), O=WOP.org(), v=WOP.v, sc=WOP.st(w.status);
+    var jt=String(w.jobType||'').trim();
+    var title=jt?(jt.indexOf('ใบงาน')===0?jt:'ใบงาน'+jt):'ใบงานแจ้งช่าง';
+    var by=(APP.user&&(APP.user.fullName||APP.user.username))||'-';
+    var mk=w.createdByName||w.createdBy||'';
+    var vars='--hd:'+T.hd+';--hdt:'+T.t+';--soft:'+T.soft+';--sep:'+T.sep;
+
+    function f(lb,val,cls){
+      return '<div class="wop-f'+(cls?' '+cls:'')+'"><span>'+lb+'</span><b>'+val+'</b></div>';
+    }
+    function sig(role,name){
+      var n=String(name||'').trim();
+      return '<div class="wop-s"><div class="ln"></div>'+
+        '<div class="nm">( '+(n?esc(n):'<i class="wop-nil sm"></i>')+' )</div>'+
+        '<b>'+role+'</b><small>วันที่ ......../......../........</small></div>';
+    }
+
+    return '<div class="wop" style="'+vars+'">'+
+      (sc==='void'?'<div class="wop-void">ใบงานถูกยกเลิก</div>':'')+
+      '<div class="wop-hd">'+
+        '<div class="wop-org"><b>'+esc(O.name)+'</b><small>'+esc(O.addr)+(O.tel?' โทร. '+esc(O.tel):'')+'</small></div>'+
+        '<div class="wop-ttl'+(title.length>18?' long':'')+'"><b>'+esc(title)+'</b><small>'+T.en+'</small></div>'+
+        '<div class="wop-no"><span>เลขที่ใบงาน</span><b>'+v(w.docNo)+'</b>'+
+          '<em class="wop-st '+sc+'">'+esc(w.status||'รอดำเนินการ')+'</em></div>'+
+      '</div>'+
+      '<div class="wop-grid">'+
+        f('วันที่รับแจ้ง',v(WOP.date(w.reportDate)))+
+        f(T.d,v(WOP.date(w.targetDate)),'hl')+
+        f('รหัสลูกค้า','<code>'+v(w.customerCode)+'</code>')+
+        f('โซนพื้นที่',v(WOP.zone(w)))+
+        f('ชื่อตึก/ซอย',v(w.customerName),'s2 wrap')+
+        f('เลขที่',v(w.address))+
+        f('โทรศัพท์',v(w.phone))+
+        f('ประเภทลูกค้า',v(w.customerType))+
+        f(T.r,v(w.cause),'hl')+
+        f('ผู้แจ้ง',v(w.reporter))+
+        f('ช่างผู้ปฏิบัติงาน',v(w.technician))+
+      '</div>'+
+      '<div class="wop-two">'+WOP.box('รายละเอียดเพิ่มเติม',w.causeDetail)+WOP.box('ผลการปฏิบัติงาน',w.result)+'</div>'+
+      '<div class="wop-sig">'+sig('ผู้แจ้ง',w.reporter)+sig('ช่างผู้ปฏิบัติงาน',w.technician)+
+        sig('ลูกค้าผู้รับบริการ','')+sig('ผู้ตรวจสอบ','')+'</div>'+
+      '<div class="wop-ft"><span>NNC CABLETV • ระบบทะเบียนประวัติลูกค้า'+(mk?' • บันทึกโดย '+esc(mk):'')+'</span>'+
+        '<span>พิมพ์โดย '+esc(by)+' • '+WOP.stamp()+'</span></div>'+
+    '</div>';
+  },
+
+  doc:function(w){
+    return '<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8">'+
+      '<title>'+esc(w.docNo||'ใบงาน')+'</title>'+
+      '<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">'+
+      '<style>'+WOP.CSS+'</style></head><body>'+WOP.html(w)+'</body></html>';
+  },
+
+  /* ---------- หาข้อมูลใบงาน ---------- */
+  isModal:function(){ var m=$('woModal'); return !!(m&&m.classList.contains('on')); },
+  find:function(x){
+    if(x&&typeof x==='object'&&!(x instanceof Event)&&(x.docNo||x.jobType)) return x;
+    var key=(x!==null&&x!==undefined&&typeof x!=='object')?String(x).trim():'';
+    if(!key&&WOP.isModal()&&$('woId')) key=$('woId').value;
+    if(!key) return null;
+    var L=(APP.wo&&APP.wo.all)||[];
+    for(var i=0;i<L.length;i++){
+      if(String(L[i].id)===key||String(L[i].docNo)===key) return L[i];
+    }
+    return null;
+  },
+  fromModal:function(){
+    function g(id){ var e=$(id); return e?e.value:''; }
+    var base=WOP.find(g('woId'))||{}, w={}, k;
+    for(k in base) if(Object.prototype.hasOwnProperty.call(base,k)) w[k]=base[k];
+    var map={docNo:'woDocNo',jobType:'woJobType',reportDate:'woReportDate',targetDate:'woTargetDate',
+      zone:'woZone',customerCode:'woCode',customerType:'woCustType',customerName:'woCustName',
+      address:'woAddress',phone:'woPhone',cause:'woCause',causeDetail:'woCauseDetail',
+      result:'woResult',reporter:'woReporter',technician:'woTechnician',status:'woStatus'};
+    for(k in map) if($(map[k])) w[k]=g(map[k]);
+    w.docNo=w.docNo||base.docNo||'';
+    return w.docNo?w:null;
+  },
+
+  /* ---------- สั่งพิมพ์ผ่านเฟรมซ่อน ---------- */
+  print:function(x,quiet){
+    if(WOP.busy) return true;
+    var w=WOP.find(x);
+    if(!w){ if(!quiet) toast('warn','ไม่พบข้อมูลใบงานที่ต้องการพิมพ์'); return false; }
+    var doc;
+    try{ doc=WOP.doc(w); }
+    catch(e){ if(!quiet) toast('error','สร้างแบบฟอร์มไม่สำเร็จ : '+e.message); return false; }
+
+    WOP.clean();
+    var f=document.createElement('iframe'), win;
+    f.id='wopFrame';
+    f.setAttribute('aria-hidden','true');
+    f.setAttribute('tabindex','-1');
+    f.style.cssText='position:fixed;right:0;bottom:0;width:9in;height:5.5in;border:0;opacity:0;pointer-events:none;z-index:-1';
+    document.body.appendChild(f);
+    try{
+      win=f.contentWindow;
+      win.document.open(); win.document.write(doc); win.document.close();
+    }catch(e){
+      WOP.clean();
+      return WOP.popup(doc,quiet);       /* เบราว์เซอร์ไม่ให้เขียนลงเฟรม : ใช้หน้าต่างใหม่แทน */
+    }
+
+    WOP.busy=true;
+    var done=false;
+    function go(){
+      if(done) return;
+      done=true; WOP.busy=false;
+      try{ win.focus(); win.print(); }
+      catch(e){ if(!quiet) toast('error','สั่งพิมพ์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'); }
+    }
+    function ready(){
+      try{
+        var fs=win.document.fonts;
+        if(fs&&fs.ready){ fs.ready.then(function(){ setTimeout(go,60); },function(){ go(); }); return; }
+      }catch(e){}
+      setTimeout(go,300);
+    }
+    try{ win.addEventListener('afterprint',function(){ setTimeout(WOP.clean,800); }); }catch(e){}
+    if(win.document.readyState==='complete') ready();
+    else win.addEventListener('load',ready);
+    setTimeout(go,3000);                  /* กันค้าง กรณีฟอนต์โหลดไม่ได้ */
+    return true;
+  },
+
+  popup:function(doc,quiet){
+    var p=null;
+    try{ p=window.open('','_blank','width=920,height=640'); }catch(e){}
+    if(!p){
+      if(!quiet) toast('warn','เบราว์เซอร์บล็อกหน้าต่างพิมพ์ กรุณาอนุญาตป๊อปอัปสำหรับเว็บนี้');
+      return false;
+    }
+    p.document.open(); p.document.write(doc); p.document.close();
+    var done=false;
+    function go(){ if(done) return; done=true; try{ p.focus(); p.print(); }catch(e){} }
+    p.addEventListener('afterprint',function(){ try{ p.close(); }catch(e){} });
+    p.addEventListener('load',function(){ setTimeout(go,300); });
+    setTimeout(go,2500);
+    return true;
+  },
+
+  clean:function(){
+    var e=$('wopFrame');
+    if(e&&e.parentNode) e.parentNode.removeChild(e);
+  }
+};
+
+/* ตัวปรับสีโหมดมืดไม่ต้องแตะเฟรมพิมพ์ */
+if(typeof NXF!=='undefined'){ NXF.SKIP+=',#wopFrame'; NXF.NOTAG.IFRAME=1; }
+
+/* ---------- เชื่อมกับปุ่มพิมพ์เดิม ---------- */
+(function(){
+  ['printWorkOrder','printWO','printWo','woPrint','printWoDoc','printJob'].forEach(function(n){
+    var o=window[n];
+    if(typeof o!=='function') return;
+    window[n]=function(x){
+      if(WOP.print(x,true)) return;
+      return o.apply(this,arguments);
+    };
+  });
+
+  document.addEventListener('click',function(e){
+    var b=(e.target&&e.target.closest)?e.target.closest('button,a,[role="button"]'):null;
+    if(!b) return;
+    var row=b.closest('#woBody'), mod=b.closest('#woModal');
+    if(!row&&!mod) return;
+
+    var lbl=(b.title||'')+' '+(b.getAttribute('aria-label')||'')+' '+(mod?(b.textContent||''):'');
+    var isP=/พิมพ์/.test(lbl);
+    if(!isP){ for(var k in b.dataset){ if(b.dataset[k]==='print'){ isP=true; break; } } }
+    if(!isP) return;
+
+    var w=null;
+    if(row){
+      var tr=b.closest('tr');
+      var id=b.dataset.id||(tr&&tr.dataset?tr.dataset.id:'');
+      w=id?WOP.find(id):null;
+    } else {
+      w=WOP.fromModal();
+    }
+    if(w&&WOP.print(w,true)){ e.preventDefault(); e.stopImmediatePropagation(); }
+  },true);
+})();
+
+/* ---------- แดชบอร์ด : กราฟประเภทใบงานใช้สีเดียวกับหัวกระดาษ ---------- */
+(function(){
+  if(typeof NXC==='undefined') return;
+  var orig=NXC.render;
+  NXC.render=function(){
+    var d=NXC.data;
+    if(d&&d.woType){
+      var src=d.woType, n={};
+      Object.keys(src).sort(function(a,b){ return WOP.rank(a)-WOP.rank(b); })
+        .forEach(function(k){ n[k]=src[k]; });
+      d.woType=n;
+    }
+    var r=orig.apply(this,arguments);
+    var ch=NXC.charts&&NXC.charts.nxcType;
+    if(ch&&ch.data&&ch.data.datasets&&ch.data.datasets[0]){
+      var L=ch.data.labels||[];
+      if(L.length&&!(L.length===1&&L[0]==='ไม่มีข้อมูล')){
+        var cols=L.map(function(l){ return WOP.type(l).hd; });
+        ch.data.datasets[0].backgroundColor=cols;
+        ch.data.datasets[0].hoverBackgroundColor=cols;
+        ch.update('none');
+      }
+    }
+    return r;
+  };
+  if(APP.page==='dashboard'&&NXC.data) NXC.retheme();
+})();
+/* =====================================================================
+ * 29.1) v4.2.2 : แก้บั๊กแพตช์ 29 (ข้อ 1–5)
+ * ต้องวางหลังแพตช์ 29 เสมอ
+ * ===================================================================*/
+(function(){
+  if(typeof WOP==='undefined') return;
+
+  /* ---------- ข้อ 5 : เลือกประเภทจากคำที่ขึ้นก่อนในชื่อใบงาน ---------- */
+  WOP.rank=function(jt){
+    var s=String(jt||'').replace(/^\s*ใบงาน/,''), best=99, pos=1e9;
+    for(var i=0;i<WOP.TYPES.length;i++){
+      var p=s.indexOf(WOP.TYPES[i].k);
+      if(p>=0&&p<pos){ pos=p; best=i; }
+    }
+    return best;
+  };
+
+  /* ---------- ข้อ 2 : ลบเฉพาะเฟรมของตัวเอง ---------- */
+  WOP.clean=function(f){
+    var e=f||$('wopFrame');
+    if(e&&e.parentNode) e.parentNode.removeChild(e);
+  };
+
+  /* ---------- ข้อ 2, 3, 4 : สั่งพิมพ์ ---------- */
+  WOP.print=function(x,quiet){
+    if(WOP.busy) return true;
+    var w=WOP.find(x);
+    if(!w){ if(!quiet) toast('warn','ไม่พบข้อมูลใบงานที่ต้องการพิมพ์'); return false; }
+    var doc;
+    try{ doc=WOP.doc(w); }
+    catch(e){ if(!quiet) toast('error','สร้างแบบฟอร์มไม่สำเร็จ : '+e.message); return false; }
+
+    WOP.clean();
+    var f=document.createElement('iframe'), win;
+    f.id='wopFrame';
+    f.setAttribute('aria-hidden','true');
+    f.setAttribute('tabindex','-1');
+    f.style.cssText='position:fixed;right:0;bottom:0;width:9in;height:5.5in;border:0;opacity:0;pointer-events:none;z-index:-1';
+    document.body.appendChild(f);
+    try{
+      win=f.contentWindow;
+      win.document.open(); win.document.write(doc); win.document.close();
+    }catch(e){
+      WOP.clean(f);
+      return WOP.popup(doc,quiet);
+    }
+
+    WOP.busy=true;
+    var done=false;
+    function go(){
+      if(done) return;
+      done=true; WOP.busy=false;
+      if(!f.parentNode) return;
+      try{ win.focus(); win.print(); }
+      catch(e){ WOP.clean(f); toast('error','สั่งพิมพ์ไม่สำเร็จ กรุณากดพิมพ์อีกครั้ง'); }
+    }
+    /* สั่งโหลดฟอนต์ทุกน้ำหนักที่ใช้ แล้วรอให้เสร็จก่อนพิมพ์ */
+    function fonts(){
+      try{
+        var fs=win.document.fonts;
+        if(fs&&fs.load&&window.Promise){
+          Promise.all(['400','600','700','800'].map(function(wt){
+            return fs.load(wt+' 10pt "Sarabun"','ใบงาน');
+          })).then(function(){ setTimeout(go,80); },function(){ go(); });
+          return;
+        }
+      }catch(e){}
+      setTimeout(go,400);
+    }
+    try{ win.addEventListener('afterprint',function(){ setTimeout(function(){ WOP.clean(f); },800); }); }catch(e){}
+    if(win.document.readyState==='complete') fonts();
+    else win.addEventListener('load',fonts);
+    setTimeout(go,4000);       /* กันค้าง กรณีฟอนต์โหลดไม่ได้ จะพิมพ์ด้วยฟอนต์สำรอง */
+    return true;
+  };
+
+  /* ---------- ข้อ 1 : ปุ่ม "บันทึกและพิมพ์" ต้องบันทึกก่อนเสมอ ----------
+   * ตัวดักที่ window ทำงานก่อนตัวดักของแพตช์ 29 ที่ document
+   * ถ้าเป็นปุ่มที่มีคำว่า "บันทึก" จะปล่อยให้ระบบเดิมบันทึกตามปกติ */
+  WOP.skipModal=false;
+  window.addEventListener('click',function(e){
+    var b=(e.target&&e.target.closest)?e.target.closest('button,a,[role="button"]'):null;
+    var skip=!!(b&&b.closest('#woModal')&&/บันทึก/.test((b.textContent||'')+' '+(b.title||'')));
+    WOP.skipModal=skip;
+    if(skip) setTimeout(function(){ WOP.skipModal=false; },0);
+  },true);
+  var fm=WOP.fromModal;
+  WOP.fromModal=function(){ return WOP.skipModal?null:fm.apply(this,arguments); };
+
+  /* วาดกราฟใหม่ด้วยการจับประเภทแบบใหม่ */
+  if(typeof NXC!=='undefined'&&APP.page==='dashboard'&&NXC.data) NXC.retheme();
+})();
 </script>
 </body>
 </html>
