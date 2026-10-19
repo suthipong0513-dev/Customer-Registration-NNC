@@ -3628,4 +3628,38 @@ function apiDashboardCharts(token, months, force) {
     return ok_(out);
   } catch (e) { return handleErr_('apiDashboardCharts', e); }
 }
+/* =====================================================================
+ * ===============  ส่งรูปโลโก้จาก Drive (v4.3.1)  ===============
+ * ใช้ได้ทั้งหน้าเข้าสู่ระบบ (ยังไม่มีโทเคน) และหลังเข้าสู่ระบบ
+ * ส่งได้เฉพาะไฟล์รูปที่ "รหัสไฟล์ถูกบันทึกอยู่ในสเปรดชีตของระบบ" เท่านั้น
+ * ===================================================================*/
+function apiLogoData(fileId) {
+  try {
+    var id = String(fileId || '').trim();
+    if (!/^[-\w]{20,}$/.test(id)) return fail_('รหัสไฟล์โลโก้ไม่ถูกต้อง', 'VALIDATION');
+
+    var ck = 'LOGO_' + id;
+    try {
+      var c = CacheService.getScriptCache().get(ck);
+      if (c) return ok_({ data: c });
+    } catch (e) {}
+
+    /* กันการขอไฟล์อื่นใน Drive : รหัสไฟล์ต้องถูกบันทึกอยู่ในสเปรดชีตของระบบ */
+    if (!getSS_().createTextFinder(id).findNext())
+      return fail_('ไม่พบโลโก้นี้ในการตั้งค่าระบบ', 'NOT_FOUND');
+
+    var f = DriveApp.getFileById(id);
+    var mt = String(f.getMimeType() || '');
+    if (mt.indexOf('image/') !== 0) return fail_('ไฟล์โลโก้ไม่ใช่รูปภาพ', 'VALIDATION');
+    if (f.getSize() > 1.5 * 1024 * 1024) return fail_('ไฟล์โลโก้ใหญ่เกิน 1.5 MB', 'VALIDATION');
+
+    var data = 'data:' + mt + ';base64,' + Utilities.base64Encode(f.getBlob().getBytes());
+    if (data.length < 95000) {
+      try { CacheService.getScriptCache().put(ck, data, 21600); } catch (e) {}
+    }
+    return ok_({ data: data });
+  } catch (e) {
+    return handleErr_('apiLogoData', e);
+  }
+}
 var ZONES = zonesLoad_();

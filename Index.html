@@ -1149,6 +1149,249 @@ body.nx.nxd #umenu > *:hover, body.nx.nxd .ac-i:hover, body.nx.nxd .ac-i.on{
 .wop-void{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%) rotate(-12deg);
   font:800 40pt/1.1 'Sarabun',sans-serif;color:rgba(198,40,40,.14);white-space:nowrap;
   border:5px solid rgba(198,40,40,.14);border-radius:14px;padding:0 .25in;pointer-events:none}
+/* =====================================================================
+ * v4.2.4 : โหมดมืด — ไม่ไฮไลต์สีเหลืองเมื่อค้นหาเจอ
+ * ===================================================================*/
+@media screen{
+  html body mark,
+  html body mark.hl,
+  html body .hl{
+    background:transparent!important;
+    background-color:transparent!important;
+    color:inherit!important;
+    -webkit-text-fill-color:currentColor!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    font-weight:inherit!important;
+  }
+}
+/* =====================================================================
+ * v4.3 : หน้าเข้าสู่ระบบ "NNC Broadcast" — ใช้คู่กับแพตช์ 30
+ * ทำงานเมื่อเปิดธีม NNC Signal (body.nx)
+ * ===================================================================*/
+@media screen{
+.lg-fx,.lg-top,.lg-tick,.lg-hero{display:none}
+
+html body.nx #loginScreen{
+  position:fixed;inset:0;overflow-x:hidden;overflow-y:auto;isolation:isolate;
+  align-items:center;justify-content:center;padding:64px 20px 70px;
+  background:#050D17!important;
+}
+html body.nx #loginScreen::before{display:none!important}
+
+/* ---------- พื้นหลังเคลื่อนไหว ---------- */
+html body.nx #loginScreen .lg-fx{
+  display:block;position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:radial-gradient(1200px 600px at 50% 115%,#0B3050 0%,transparent 60%),
+             linear-gradient(180deg,#040A13 0%,#071526 60%,#0A1D33 100%);
+}
+.lg-blob{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform}
+.lg-blob.b1{width:48vw;height:48vw;left:-14vw;top:-18vw;background:#0891B2;opacity:.45;animation:lgB1 24s ease-in-out infinite alternate}
+.lg-blob.b2{width:42vw;height:42vw;right:-12vw;bottom:-20vw;background:#6D4AFF;opacity:.40;animation:lgB2 28s ease-in-out infinite alternate}
+.lg-blob.b3{width:26vw;height:26vw;left:38vw;top:22vh;background:#22D3EE;opacity:.14;animation:lgB3 32s ease-in-out infinite alternate}
+@keyframes lgB1{to{transform:translate(18vw,14vh) scale(1.15)}}
+@keyframes lgB2{to{transform:translate(-16vw,-12vh) scale(1.1)}}
+@keyframes lgB3{to{transform:translate(-14vw,18vh) scale(1.3)}}
+
+.lg-floor{
+  position:absolute;left:-50%;right:-50%;bottom:-6%;height:58%;
+  transform:perspective(380px) rotateX(64deg);transform-origin:50% 100%;
+  background-image:linear-gradient(rgba(34,211,238,.28) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(34,211,238,.28) 1px,transparent 1px);
+  background-size:60px 60px;animation:lgFloor 2.8s linear infinite;
+  -webkit-mask-image:linear-gradient(to top,#000 10%,transparent 90%);
+          mask-image:linear-gradient(to top,#000 10%,transparent 90%);
+}
+@keyframes lgFloor{from{background-position:0 0}to{background-position:0 60px}}
+.lg-fx canvas{position:absolute;inset:0;width:100%;height:100%}
+.lg-scan{position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.022) 0 1px,transparent 1px 3px)}
+.lg-scan::after{content:"";position:absolute;left:0;right:0;top:-25vh;height:25vh;
+  background:linear-gradient(to bottom,transparent,rgba(34,211,238,.07),transparent);animation:lgSweep 8s linear infinite}
+@keyframes lgSweep{to{transform:translateY(150vh)}}
+.lg-vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.6) 100%)}
+
+/* ---------- แถบบน ---------- */
+html body.nx #loginScreen .lg-top{
+  display:flex;align-items:center;gap:10px;position:fixed;top:18px;left:24px;right:24px;z-index:2;
+  pointer-events:none;font:600 12px/1 'Prompt',sans-serif;color:#9FB6C8;letter-spacing:.6px;
+}
+.lg-live{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;
+  background:rgba(239,68,68,.16);border:1px solid rgba(248,113,113,.4);color:#FCA5A5;letter-spacing:1.4px;font-weight:700}
+.lg-live i,.lg-onair i{width:7px;height:7px;border-radius:50%;background:#EF4444;animation:lgPulse 1.6s infinite}
+@keyframes lgPulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 8px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+#lgClock{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-variant-numeric:tabular-nums}
+.lg-ch{margin-left:auto;padding:6px 12px;border-radius:8px;border:1px solid rgba(34,211,238,.35);color:#67E8F9;letter-spacing:1.6px}
+
+/* ---------- ตัววิ่งด้านล่าง ---------- */
+html body.nx #loginScreen .lg-tick{
+  display:flex;align-items:center;position:fixed;left:0;right:0;bottom:0;height:36px;z-index:2;overflow:hidden;
+  pointer-events:none;background:rgba(4,10,19,.78);border-top:1px solid rgba(34,211,238,.2);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.lg-tick > b{flex:none;height:100%;display:flex;align-items:center;padding:0 16px;position:relative;z-index:1;
+  background:linear-gradient(90deg,#0A8A94,#7C5CFF);color:#fff;font:700 11.5px 'Prompt',sans-serif;letter-spacing:1.4px}
+.lg-run{display:flex;flex:none;white-space:nowrap;animation:lgTick 60s linear infinite}
+.lg-run span{flex:none;padding-right:48px;color:#B9C9D6;font-size:13px}
+.lg-run em{font-style:normal;color:#22D3EE;margin:0 16px}
+@keyframes lgTick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- โครงหน้า ---------- */
+html body.nx #loginScreen .lg-wrap{
+  position:relative;z-index:1;width:100%;max-width:1140px;margin:auto;
+  display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:64px;align-items:center;
+}
+
+/* ---------- แผงด้านซ้าย ---------- */
+html body.nx #loginScreen .lg-hero{display:block;color:#E6EEF5;animation:lgIn .8s .1s cubic-bezier(.2,.8,.2,1) both}
+.lg-onair{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  font:700 11.5px 'Prompt',sans-serif;letter-spacing:1.6px;color:#CFE9F0}
+.lg-hero h2{margin:20px 0 14px;font:700 clamp(32px,3.6vw,50px)/1.18 'Prompt',sans-serif;color:#fff}
+.lg-hero h2 em{font-style:normal;background:linear-gradient(90deg,#22D3EE,#A78BFA);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.lg-hero p{margin:0;max-width:500px;font-size:16px;line-height:1.75;color:#9FB1C2}
+.lg-feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:30px;max-width:560px}
+.lg-feat{padding:14px 14px 13px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:transform .2s,border-color .2s}
+.lg-feat:hover{transform:translateY(-3px);border-color:rgba(34,211,238,.4)}
+.lg-feat i{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;margin-bottom:10px;background:rgba(34,211,238,.12);color:#67E8F9}
+.lg-feat:nth-child(2) i{background:rgba(249,115,22,.14);color:#FDBA74}
+.lg-feat:nth-child(3) i{background:rgba(167,139,250,.15);color:#C4B5FD}
+.lg-feat svg{width:18px;height:18px}
+.lg-feat b{display:block;font:600 14px 'Prompt',sans-serif;color:#F1F6FA}
+.lg-feat small{display:block;margin-top:2px;font-size:12.5px;color:#8DA2B5}
+.lg-sig{display:flex;align-items:center;gap:12px;margin-top:28px;font:600 11.5px 'Prompt',sans-serif;letter-spacing:1.6px;color:#7FA0B5}
+.lg-eq{display:flex;align-items:flex-end;gap:3px;height:20px}
+.lg-eq i{width:4px;height:30%;border-radius:2px;background:linear-gradient(#22D3EE,#7C5CFF);animation:lgEq 1.2s ease-in-out infinite}
+.lg-eq i:nth-child(2){animation-delay:.15s}.lg-eq i:nth-child(3){animation-delay:.3s}
+.lg-eq i:nth-child(4){animation-delay:.45s}.lg-eq i:nth-child(5){animation-delay:.6s}
+@keyframes lgEq{0%,100%{height:30%}50%{height:100%}}
+
+/* ---------- การ์ดเข้าสู่ระบบ ---------- */
+html body.nx #loginScreen .login-card{
+  position:relative;z-index:1;width:100%;max-width:430px;margin:0 auto;overflow:hidden;
+  padding:34px 32px 24px!important;color:#E6EEF5;
+  background:linear-gradient(180deg,rgba(17,32,50,.80),rgba(9,20,33,.86))!important;
+  border:1px solid rgba(255,255,255,.10)!important;border-radius:24px!important;
+  box-shadow:0 40px 100px -30px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.06)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);
+  animation:lgIn .7s cubic-bezier(.2,.8,.2,1) both;
+}
+html body.nx #loginScreen .login-card::before{
+  content:"";position:absolute;top:0;left:-45%;width:45%;height:2px;
+  background:linear-gradient(90deg,transparent,#22D3EE,#A78BFA,transparent);animation:lgLine 3.6s ease-in-out infinite;
+}
+html body.nx #loginScreen .login-card *{border-color:rgba(255,255,255,.08)}
+html body.nx #loginScreen .login-card h1,
+html body.nx #loginScreen .login-card h2,
+html body.nx #loginScreen #loginOrg{color:#fff!important;font-family:'Prompt','Sarabun',sans-serif}
+html body.nx #loginScreen .login-card p,
+html body.nx #loginScreen .login-card small,
+html body.nx #loginScreen .login-card .muted{color:#8FA3B6!important}
+html body.nx #loginScreen .login-card label{color:#C2CFDB!important}
+
+/* โลโก้ + วงสัญญาณ */
+html body.nx #loginScreen .login-logo{
+  position:relative;color:#fff!important;
+  background:linear-gradient(135deg,#22D3EE,#0A8A94 50%,#7C5CFF)!important;
+  box-shadow:0 14px 40px -10px rgba(34,211,238,.7)!important;animation:lgFloat 5s ease-in-out infinite;
+}
+html body.nx #loginScreen .login-logo svg{stroke:#fff!important;color:#fff!important}
+html body.nx #loginScreen .login-logo::before,
+html body.nx #loginScreen .login-logo::after{
+  content:"";position:absolute;inset:-6px;border-radius:inherit;border:2px solid rgba(34,211,238,.55);
+  animation:lgRing 2.6s ease-out infinite;pointer-events:none;
+}
+html body.nx #loginScreen .login-logo::after{animation-delay:1.3s}
+
+/* ช่องกรอก */
+html body.nx #loginScreen .login-card input:not([type=checkbox]):not([type=radio]){
+  background:rgba(255,255,255,.05)!important;border:1px solid rgba(255,255,255,.14)!important;
+  color:#F1F6FA!important;border-radius:12px!important;caret-color:#22D3EE;
+  transition:border-color .15s,box-shadow .15s,background .15s;
+}
+html body.nx #loginScreen .login-card input:focus{
+  outline:0;background:rgba(255,255,255,.08)!important;border-color:#22D3EE!important;
+  box-shadow:0 0 0 4px rgba(34,211,238,.18)!important;
+}
+html body.nx #loginScreen .login-card input::placeholder{color:#7D90A3!important;opacity:1}
+html body.nx #loginScreen .login-card input:-webkit-autofill{
+  -webkit-text-fill-color:#F1F6FA!important;box-shadow:0 0 0 1000px #10233A inset!important;
+}
+html body.nx #loginScreen .login-card button:not(#btnLogin):not(.btn){color:#8FA3B6!important;background:transparent!important}
+html body.nx #loginScreen .login-card button:not(#btnLogin):not(.btn):hover{color:#22D3EE!important}
+
+/* ปุ่มเข้าสู่ระบบ */
+html body.nx #loginScreen #btnLogin{
+  position:relative;overflow:hidden;border:0!important;color:#fff!important;border-radius:12px!important;font-weight:700;
+  background:linear-gradient(90deg,#06B6D4,#0A8A94 45%,#7C5CFF)!important;background-size:200% 100%!important;
+  box-shadow:0 12px 30px -10px rgba(34,211,238,.6);transition:background-position .5s,transform .15s,box-shadow .2s;
+}
+html body.nx #loginScreen #btnLogin:hover:not(:disabled){background-position:100% 0!important;transform:translateY(-1px);box-shadow:0 16px 34px -10px rgba(124,92,255,.6)}
+html body.nx #loginScreen #btnLogin:disabled{opacity:.8}
+html body.nx #loginScreen #btnLogin::after{
+  content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);
+  animation:lgShine 4s ease-in-out infinite;
+}
+
+/* กล่องข้อความแจ้ง */
+html body.nx #loginScreen #loginErr{
+  background:rgba(239,68,68,.12)!important;border:1px solid rgba(248,113,113,.35)!important;
+  color:#FCA5A5!important;border-radius:12px!important;
+}
+html body.nx #loginScreen #loginErr.lg-ok{
+  background:rgba(34,197,94,.12)!important;border-color:rgba(74,222,128,.35)!important;color:#86EFAC!important;
+}
+.lg-caps{display:none;align-items:center;gap:6px;margin-top:6px;font-size:12.5px;font-weight:600;color:#FBBF24}
+.lg-caps.on{display:flex}
+
+@keyframes lgIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes lgFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes lgRing{0%{transform:scale(.92);opacity:.85}100%{transform:scale(1.5);opacity:0}}
+@keyframes lgLine{from{left:-45%}to{left:100%}}
+@keyframes lgShine{0%,60%{left:-60%}100%{left:130%}}
+
+/* ---------- จอเล็ก ---------- */
+@media (max-width:980px){
+  html body.nx #loginScreen .lg-wrap{grid-template-columns:1fr;max-width:430px;gap:0}
+  html body.nx #loginScreen .lg-hero{display:none}
+}
+@media (max-width:560px){
+  html body.nx #loginScreen{padding:60px 14px 56px}
+  html body.nx #loginScreen .login-card{padding:28px 20px 20px!important}
+  .lg-ch{display:none}
+}
+
+/* ---------- ผู้ที่ตั้งค่าลดการเคลื่อนไหว ---------- */
+@media (prefers-reduced-motion:reduce){
+  html body.nx #loginScreen *,
+  html body.nx #loginScreen *::before,
+  html body.nx #loginScreen *::after{animation:none!important;transition:none!important}
+}
+}
+/* =====================================================================
+ * v4.3.1 : กล่องโลโก้ — พื้นขาวเมื่อมีรูป / ไอคอนทีวีเมื่อโหลดไม่ได้
+ * ===================================================================*/
+@media screen{
+.sb-logo img,.login-logo img{
+  display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit;
+}
+.sb-logo.lg-has-img,
+html body.nx #sidebar .sb-logo.lg-has-img{
+  background:#fff!important;padding:4px!important;
+  box-shadow:0 6px 18px -8px rgba(0,0,0,.5)!important;
+}
+.login-logo.lg-has-img,
+html body.nx #loginScreen .login-logo.lg-has-img{
+  background:#fff!important;padding:7px!important;
+}
+.lg-no-img > img{display:none!important}
+.lg-tv{display:none}
+.lg-no-img > .lg-tv{display:block;width:56%;height:56%;margin:auto;color:#fff;stroke:#fff}
+}
 </style>
 </head>
 <body>
@@ -6712,6 +6955,359 @@ if(typeof NXF!=='undefined'){ NXF.SKIP+=',#wopFrame'; NXF.NOTAG.IFRAME=1; }
 
   /* วาดกราฟใหม่ด้วยการจับประเภทแบบใหม่ */
   if(typeof NXC!=='undefined'&&APP.page==='dashboard'&&NXC.data) NXC.retheme();
+})();
+/* =====================================================================
+ * 29.2) v4.2.3 : กรอบเส้นตัดรอบใบงาน
+ * ต้องวางหลังแพตช์ 29.1 เสมอ
+ * ===================================================================*/
+(function(){
+  if(typeof WOP==='undefined') return;
+
+  WOP.CUT=true;   /* ตั้งเป็น false ถ้าไม่ต้องการกรอบเส้นตัด */
+
+  WOP.CSS+='\n'+[
+    '.cut .wop::before{content:"";position:absolute;inset:.05in;border:1.3px dashed #4A535C;border-radius:3px;pointer-events:none;z-index:3}',
+    '.cut .wop::after{content:"";position:absolute;left:.3in;top:calc(.05in - 8px);width:16px;height:16px;background:#fff url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%234A535C%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Ccircle cx=%276%27 cy=%276%27 r=%273%27/%3E%3Ccircle cx=%276%27 cy=%2718%27 r=%273%27/%3E%3Cline x1=%2720%27 y1=%274%27 x2=%278.12%27 y2=%2715.88%27/%3E%3Cline x1=%2714.47%27 y1=%2714.48%27 x2=%2720%27 y2=%2720%27/%3E%3Cline x1=%278.12%27 y1=%278.12%27 x2=%2712%27 y2=%2712%27/%3E%3C/svg%3E") center/14px no-repeat;pointer-events:none;z-index:4}'
+  ].join('\n');
+
+  var od=WOP.doc;
+  WOP.doc=function(w){
+    var d=od.apply(this,arguments);
+    return WOP.CUT?d.replace('<body>','<body class="cut">'):d;
+  };
+})();
+/* =====================================================================
+ * 30) v4.3 : หน้าเข้าสู่ระบบ "NNC Broadcast" — พื้นหลังเคลื่อนไหว
+ * ต้องวางหลังแพตช์ 26 (ธีม) และ 28 (ตัวปรับสีโหมดมืด)
+ * ===================================================================*/
+(function(){
+  var scr=$('loginScreen');
+  if(!scr||$('lgWrap')) return;                 /* กันติดตั้งซ้ำ */
+  var card=qs('.login-card',scr);
+  if(!card) return;
+
+  /* ตัวปรับสีโหมดมืดไม่ต้องแตะหน้าเข้าสู่ระบบ */
+  if(typeof NXF!=='undefined') NXF.SKIP+=',#loginScreen';
+
+  var MON=['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  function ico(p){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'; }
+  var lo=$('loginOrg');
+  var org=(lo&&lo.textContent.trim())||'บริษัท นวนคร เคเบิลทีวี จำกัด';
+
+  /* ---------- ชั้นพื้นหลัง แถบบน และตัววิ่ง ---------- */
+  scr.insertAdjacentHTML('afterbegin',
+    '<div class="lg-fx" aria-hidden="true">'+
+      '<div class="lg-blob b1"></div><div class="lg-blob b2"></div><div class="lg-blob b3"></div>'+
+      '<div class="lg-floor"></div><canvas id="lgFx"></canvas><div class="lg-scan"></div><div class="lg-vig"></div>'+
+    '</div>'+
+    '<div class="lg-top" aria-hidden="true"><span class="lg-live"><i></i>LIVE</span><span id="lgClock"></span>'+
+      '<span class="lg-ch">CH 01 · HD</span></div>'+
+    '<div class="lg-tick" aria-hidden="true"><b>NNC CABLETV</b><div class="lg-run" id="lgRun"></div></div>');
+
+  var items=[
+    'ระบบทะเบียนประวัติลูกค้า '+esc(org),
+    'เคเบิลทีวีท้องถิ่น ภาพคมชัด สัญญาณเสถียร',
+    'ทะเบียนลูกค้า • ใบงานแจ้งช่าง • รายงานและสถิติ',
+    '1 บัญชี ใช้งานได้ครั้งละ 1 เครื่อง',
+    'กรุณาออกจากระบบทุกครั้งหลังเลิกใช้งาน'
+  ];
+  var A=items.join('<em>◆</em>'), half=A+'<em>◆</em>'+A+'<em>◆</em>';
+  $('lgRun').innerHTML='<span>'+half+'</span><span>'+half+'</span>';
+
+  /* ---------- แผงด้านซ้าย + ย้ายการ์ดเข้าโครงใหม่ ---------- */
+  var wrap=document.createElement('div');
+  wrap.id='lgWrap'; wrap.className='lg-wrap';
+  wrap.innerHTML=
+    '<div class="lg-hero">'+
+      '<span class="lg-onair"><i></i>ON AIR • NNC CABLETV</span>'+
+      '<h2>เชื่อมต่อทุกบ้าน<br><em>ด้วยสัญญาณที่ชัดเจน</em></h2>'+
+      '<p>ระบบบริหารงานเคเบิลทีวีท้องถิ่น จัดการทะเบียนลูกค้า ใบงานช่าง และรายงาน ครบจบในที่เดียว</p>'+
+      '<div class="lg-feats">'+
+        '<div class="lg-feat"><i>'+ico('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>')+'</i><b>ทะเบียนลูกค้า</b><small>แยกตามโซนพื้นที่</small></div>'+
+        '<div class="lg-feat"><i>'+ico('<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"/>')+'</i><b>ใบงานแจ้งช่าง</b><small>ติดตามงานได้ทันที</small></div>'+
+        '<div class="lg-feat"><i>'+ico('<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>')+'</i><b>รายงานและสถิติ</b><small>ภาพรวมเชิงกราฟ</small></div>'+
+      '</div>'+
+      '<div class="lg-sig"><span class="lg-eq"><i></i><i></i><i></i><i></i><i></i></span>SIGNAL STABLE • 100%</div>'+
+    '</div>';
+  card.parentNode.insertBefore(wrap,card);
+  wrap.appendChild(card);                        /* ย้ายทั้งก้อน ตัวฟังเหตุการณ์เดิมยังอยู่ครบ */
+
+  /* ---------- เตือน Caps Lock ---------- */
+  var pw=$('lgPass');
+  if(pw){
+    var cap=document.createElement('div');
+    cap.className='lg-caps';
+    cap.innerHTML=ico('<path d="M12 3l8 9h-5v6H9v-6H4z"/>').replace('<svg','<svg width="14" height="14"')+'Caps Lock เปิดอยู่';
+    var ref=(pw.parentElement&&pw.parentElement.tagName!=='FORM'&&pw.parentElement!==card)?pw.parentElement:pw;
+    ref.parentNode.insertBefore(cap,ref.nextSibling);
+    var capFn=function(e){
+      if(e&&e.getModifierState) cap.classList[e.getModifierState('CapsLock')?'add':'remove']('on');
+    };
+    pw.addEventListener('keydown',capFn);
+    pw.addEventListener('keyup',capFn);
+    pw.addEventListener('blur',function(){ cap.classList.remove('on'); });
+  }
+
+  /* ---------- ข้อความ "ออกจากระบบเรียบร้อย" เป็นสีเขียว ---------- */
+  var le=$('loginErr');
+  if(le&&window.MutationObserver){
+    var tone=function(){
+      var ok=/ออกจากระบบเรียบร้อย/.test(le.textContent||'');
+      if(le.classList.contains('lg-ok')!==ok) le.classList[ok?'add':'remove']('lg-ok');
+    };
+    /* ไม่ดู attributes เพื่อกันวนไม่จบตอนสลับคลาส */
+    new MutationObserver(tone).observe(le,{childList:true,characterData:true,subtree:true});
+    tone();
+  }
+
+  /* ---------- เครือข่ายสัญญาณ (canvas) ---------- */
+  var FX={
+    cv:$('lgFx'), ctx:null, w:0, h:0, N:[], P:[], run:false, last:0, spawn:0, D:150,
+    mq:window.matchMedia?matchMedia('(prefers-reduced-motion: reduce)'):null,
+    still:function(){ return !!(FX.mq&&FX.mq.matches); },
+    on:function(){
+      return scr.style.display!=='none'&&!document.hidden&&document.body.classList.contains('nx');
+    },
+    size:function(){
+      var w=window.innerWidth, h=window.innerHeight, r=Math.min(window.devicePixelRatio||1,2);
+      if(!w||!h) return false;
+      FX.w=w; FX.h=h;
+      FX.cv.width=Math.round(w*r); FX.cv.height=Math.round(h*r);
+      FX.ctx.setTransform(r,0,0,r,0,0);
+      var n=Math.round(Math.max(26,Math.min(80,w*h/18000)));
+      if(FX.N.length!==n){
+        FX.N=[]; FX.P=[];
+        for(var i=0;i<n;i++) FX.N.push({x:Math.random()*w,y:Math.random()*h,
+          vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,r:Math.random()*1.4+.8});
+      } else {
+        FX.N.forEach(function(p){ if(p.x>w) p.x=Math.random()*w; if(p.y>h) p.y=Math.random()*h; });
+      }
+      return true;
+    },
+    step:function(dt){
+      var w=FX.w, h=FX.h, N=FX.N, i;
+      for(i=0;i<N.length;i++){
+        var p=N[i];
+        p.x+=p.vx*dt; p.y+=p.vy*dt;
+        if(p.x<0){ p.x=0; p.vx=-p.vx; } else if(p.x>w){ p.x=w; p.vx=-p.vx; }
+        if(p.y<0){ p.y=0; p.vy=-p.vy; } else if(p.y>h){ p.y=h; p.vy=-p.vy; }
+      }
+      for(i=FX.P.length-1;i>=0;i--){ FX.P[i].t+=FX.P[i].s*dt; if(FX.P[i].t>=1) FX.P.splice(i,1); }
+      FX.spawn-=dt;
+      if(FX.spawn<=0&&FX.P.length<14&&N.length>1){
+        FX.spawn=8+Math.random()*12;
+        var a=Math.floor(Math.random()*N.length), b=-1, best=FX.D*FX.D;
+        for(i=0;i<N.length;i++){
+          if(i===a) continue;
+          var dx=N[i].x-N[a].x, dy=N[i].y-N[a].y, d2=dx*dx+dy*dy;
+          if(d2<best){ best=d2; b=i; }
+        }
+        if(b>=0) FX.P.push({a:a,b:b,t:0,s:.012+Math.random()*.01,
+          c:Math.random()<.6?'34,211,238':'167,139,250'});
+      }
+    },
+    draw:function(){
+      var c=FX.ctx, N=FX.N, D=FX.D, D2=D*D, i, j;
+      c.clearRect(0,0,FX.w,FX.h);
+      c.lineWidth=1;
+      for(i=0;i<N.length;i++){
+        for(j=i+1;j<N.length;j++){
+          var dx=N[i].x-N[j].x, dy=N[i].y-N[j].y, d2=dx*dx+dy*dy;
+          if(d2>=D2) continue;
+          c.strokeStyle='rgba(34,211,238,'+((1-Math.sqrt(d2)/D)*.28).toFixed(3)+')';
+          c.beginPath(); c.moveTo(N[i].x,N[i].y); c.lineTo(N[j].x,N[j].y); c.stroke();
+        }
+      }
+      c.fillStyle='rgba(165,243,252,.75)';
+      for(i=0;i<N.length;i++){ c.beginPath(); c.arc(N[i].x,N[i].y,N[i].r,0,6.2832); c.fill(); }
+      for(i=0;i<FX.P.length;i++){
+        var q=FX.P[i], A=N[q.a], B=N[q.b];
+        if(!A||!B) continue;
+        var x=A.x+(B.x-A.x)*q.t, y=A.y+(B.y-A.y)*q.t;
+        var g=c.createRadialGradient(x,y,0,x,y,10);
+        g.addColorStop(0,'rgba('+q.c+',.95)'); g.addColorStop(1,'rgba('+q.c+',0)');
+        c.fillStyle=g; c.beginPath(); c.arc(x,y,10,0,6.2832); c.fill();
+      }
+    },
+    frame:function(t){
+      if(!FX.on()){ FX.run=false; return; }        /* หน้าเข้าสู่ระบบซ่อน : หยุดวาด */
+      if(FX.still()){ FX.run=false; FX.draw(); return; }
+      var dt=FX.last?Math.min(3,(t-FX.last)/16.67):1;
+      FX.last=t;
+      FX.step(dt); FX.draw();
+      requestAnimationFrame(FX.frame);
+    },
+    start:function(){
+      if(!FX.ctx||!FX.on()||getComputedStyle(scr).display==='none') return;
+      if(!FX.size()) return;
+      if(FX.still()){ FX.draw(); return; }
+      if(FX.run) return;
+      FX.run=true; FX.last=0;
+      requestAnimationFrame(FX.frame);
+    }
+  };
+  try{ FX.ctx=FX.cv.getContext('2d'); }catch(e){ FX.ctx=null; }
+
+  /* ---------- นาฬิกา ---------- */
+  function clock(){
+    if(scr.style.display==='none') return;
+    var d=new Date(), c=$('lgClock'); if(!c) return;
+    c.textContent=d.getDate()+' '+MON[d.getMonth()+1]+' '+(d.getFullYear()+543)+' • '+
+      ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);
+  }
+  clock();
+  setInterval(clock,1000);
+
+  /* ---------- เริ่ม/หยุดตามการแสดงผล ---------- */
+  if(window.MutationObserver){
+    new MutationObserver(function(){ clock(); FX.start(); })
+      .observe(scr,{attributes:true,attributeFilter:['style']});
+  }
+  document.addEventListener('visibilitychange',FX.start);
+  var rz=null;
+  window.addEventListener('resize',function(){ clearTimeout(rz); rz=setTimeout(FX.start,150); });
+  if(FX.mq){
+    var mqFn=function(){ FX.start(); };
+    if(FX.mq.addEventListener) FX.mq.addEventListener('change',mqFn);
+    else if(FX.mq.addListener) FX.mq.addListener(mqFn);
+  }
+  if(typeof NX!=='undefined'){
+    var ns=NX.set;
+    NX.set=function(on){ ns.apply(this,arguments); FX.start(); };
+  }
+  FX.start();
+})();
+/* =====================================================================
+ * 31) v4.3.1 : แก้โลโก้ไม่แสดง (ลิงก์ Google Drive)
+ * ===================================================================*/
+(function(){
+  var LG={
+    KEY:'nnc_logo_cache_v1',
+    BOX:'.sb-logo,.login-logo',
+    TV:'<svg class="lg-tv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>',
+
+    /* รูปที่ต้องดูแล : อยู่ในกล่องโลโก้ หรือเป็นลิงก์ Google Drive */
+    want:function(img){
+      if(!img||img.tagName!=='IMG') return false;
+      if(img.parentElement&&img.parentElement.matches(LG.BOX)) return true;
+      return /drive\.google\.com|googleusercontent\.com/.test(img.getAttribute('src')||'');
+    },
+    id:function(u){
+      var s=String(u||'');
+      if(!/google/.test(s)) return '';
+      var m=s.match(/\/d\/([-\w]{20,})/)||s.match(/[?&]id=([-\w]{20,})/);
+      return m?m[1]:'';
+    },
+    getCache:function(id){
+      try{ var o=JSON.parse(localStorage.getItem(LG.KEY)||'null'); return (o&&o.id===id)?o.data:''; }
+      catch(e){ return ''; }
+    },
+    putCache:function(id,data){
+      try{ localStorage.setItem(LG.KEY,JSON.stringify({id:id,data:data})); }catch(e){}
+    },
+    set:function(img,src){ img.dataset.lgSet=src; img.setAttribute('src',src); },
+    box:function(img){ var p=img.parentElement; return (p&&p.matches(LG.BOX))?p:null; },
+
+    ok:function(img){
+      var p=LG.box(img); if(!p) return;
+      p.classList.add('lg-has-img'); p.classList.remove('lg-no-img');
+    },
+    fail:function(img){
+      var p=LG.box(img); if(!p) return;
+      p.classList.remove('lg-has-img'); p.classList.add('lg-no-img');
+      var has=false;
+      for(var n=p.firstElementChild;n;n=n.nextElementSibling) if(n.classList&&n.classList.contains('lg-tv')) has=true;
+      if(!has) p.insertAdjacentHTML('beforeend',LG.TV);
+    },
+
+    /* ระบบเดิมใส่ลิงก์โลโก้ใหม่ */
+    fresh:function(img){
+      var src=img.getAttribute('src')||'';
+      if(!src||src===img.dataset.lgSet) return;
+      img.dataset.lgOrig=src; img.dataset.lgSet='';
+      var p=LG.box(img); if(p) p.classList.remove('lg-no-img');
+      var id=LG.id(src);
+      if(!id){
+        img.dataset.lgStep='9';                       /* ไม่ใช่ลิงก์ Drive : ไม่มีทางสำรอง */
+        if(img.complete) (img.naturalWidth?LG.ok:LG.fail)(img);
+        return;
+      }
+      var c=LG.getCache(id);
+      if(c){ img.dataset.lgStep='0'; LG.set(img,c); return; }
+      img.dataset.lgStep='1';                         /* ข้ามลิงก์เดิมที่ถูกบล็อก ไปใช้ลิงก์รูปแบบใหม่เลย */
+      LG.set(img,'https://lh3.googleusercontent.com/d/'+id+'=w400');
+    },
+
+    /* โหลดไม่ขึ้น : ลองทางถัดไป */
+    next:function(img){
+      var id=LG.id(img.dataset.lgOrig);
+      var st=parseInt(img.dataset.lgStep||'0',10);
+      if(!id||st>=3){ LG.fail(img); return; }
+      img.dataset.lgStep=String(st+1);
+      if(st===0){ LG.set(img,'https://lh3.googleusercontent.com/d/'+id+'=w400'); return; }
+      if(st===1){ LG.set(img,'https://drive.google.com/thumbnail?id='+id+'&sz=w400'); return; }
+      LG.server(img,id);
+    },
+
+    server:function(img,id){
+      if(!(window.google&&google.script&&google.script.run)){ LG.fail(img); return; }
+      var want=img.dataset.lgOrig;
+      google.script.run
+        .withSuccessHandler(function(r){
+          if(img.dataset.lgOrig!==want) return;       /* ระหว่างรอ มีการเปลี่ยนโลโก้แล้ว */
+          if(r&&r.ok!==false&&r.data&&r.data.data){
+            LG.putCache(id,r.data.data);
+            LG.set(img,r.data.data);
+          } else {
+            LG.fail(img);
+            if(r&&r.message&&window.console) console.warn('โลโก้ : '+r.message);
+          }
+        })
+        .withFailureHandler(function(err){
+          if(img.dataset.lgOrig!==want) return;
+          LG.fail(img);
+          if(window.console) console.warn('โลโก้ : '+(err&&err.message?err.message:err));
+        })
+        .apiLogoData(id);
+    }
+  };
+
+  /* โหลดไม่ขึ้น / โหลดสำเร็จ (ดักแบบ capture เพราะเหตุการณ์ของรูปไม่ส่งต่อขึ้นไป) */
+  document.addEventListener('error',function(e){
+    var t=e.target;
+    if(!LG.want(t)) return;
+    if(!t.dataset.lgOrig) t.dataset.lgOrig=t.getAttribute('src')||'';
+    LG.next(t);
+  },true);
+  document.addEventListener('load',function(e){
+    var t=e.target;
+    if(LG.want(t)&&t.naturalWidth) LG.ok(t);
+  },true);
+
+  /* ระบบเดิมเปลี่ยนลิงก์โลโก้ เช่น ตอนเข้าสู่ระบบหรือบันทึกการตั้งค่า */
+  if(window.MutationObserver){
+    new MutationObserver(function(ms){
+      for(var i=0;i<ms.length;i++){
+        var m=ms[i];
+        if(m.type==='attributes'){ if(LG.want(m.target)) LG.fresh(m.target); continue; }
+        for(var j=0;j<m.addedNodes.length;j++){
+          var n=m.addedNodes[j];
+          if(n.nodeType!==1) continue;
+          if(LG.want(n)) LG.fresh(n);
+          if(n.getElementsByTagName){
+            var im=n.getElementsByTagName('img');
+            for(var k=0;k<im.length;k++) if(LG.want(im[k])) LG.fresh(im[k]);
+          }
+        }
+      }
+    }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['src']});
+  }
+
+  /* รูปที่มีอยู่แล้วตอนโหลดหน้า */
+  var all=document.getElementsByTagName('img');
+  for(var i=0;i<all.length;i++) if(LG.want(all[i])) LG.fresh(all[i]);
+
+  window.LOGOFIX=LG;
 })();
 </script>
 </body>
